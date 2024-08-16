@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ECurrencySymbol, EMediaEnum, Prisma } from "@repo/db";
 
 export const LoginSchema = z.object({
   email: z
@@ -36,9 +37,9 @@ export const SignUpSchema = LoginSchema.pick({ email: true }).merge(
         {
           message:
             "Password must include an uppercase letter, a lowercase letter, a digit, and a special character",
-        },
+        }
       ),
-  }),
+  })
 );
 export type TSignupSchema = z.infer<typeof SignUpSchema>;
 
@@ -53,8 +54,55 @@ export type TOtpSchema = z.infer<typeof OTPSchema>;
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
-export const ObjectIdSchema = z
+export const ObjectIdFormatSchema = z
   .string()
   .refine((value) => objectIdRegex.test(value), {
     message: "Invalid ObjectID format",
   });
+
+export const ObjectIdParamSchema = (paramName: string) =>
+  z.object({
+    [paramName]: ObjectIdFormatSchema,
+  });
+
+// Product zod schema
+
+const CurrenyEnum = z.nativeEnum(ECurrencySymbol);
+const MediaEnum = z.nativeEnum(EMediaEnum);
+
+const TPriceSchema = z.object({
+  amount: z.coerce.number().nonnegative(),
+  currency: CurrenyEnum.default(ECurrencySymbol.INR),
+}) satisfies z.Schema<Prisma.TPriceCreateInput>;
+
+const ProductDimensionSchema = z.object({
+  length: z.coerce.number().nonnegative(),
+  width: z.coerce.number().nonnegative(),
+  height: z.coerce.number().nonnegative(),
+  weight: z.coerce.number().nonnegative(),
+}) satisfies z.Schema<Prisma.ProductDimensionCreateInput>;
+
+const TTablePropsSchema = z.object({
+  key: z.string(),
+  value: z.string(),
+}) satisfies z.Schema<Prisma.TTablePropsCreateInput>;
+
+const TMediaSchema = z.object({
+  url: z.string().url(),
+  type: MediaEnum,
+  isDefault: z.boolean().default(false),
+  orderNo: z.coerce.number().nonnegative(),
+}) satisfies z.Schema<Prisma.TMediaCreateInput>;
+
+export const ProductSchema = z
+  .object({
+    title: z.string(),
+    description: z.string(),
+    price: TPriceSchema,
+    dimension: ProductDimensionSchema,
+    quantityInStock: z.coerce.number().nonnegative(),
+    tableProps: z.array(TTablePropsSchema),
+    medias: z.array(TMediaSchema).optional(),
+  })
+  .strict();
+//  satisfies z.Schema<Prisma.ProductUncheckedCreateInput>;

@@ -7,7 +7,7 @@ import { AUTH_COOKIE_NAME } from "../lib/const";
 export const authMiddleware = async (
   req: Request,
   _res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   let authToken = req.cookies[AUTH_COOKIE_NAME];
 
@@ -18,7 +18,15 @@ export const authMiddleware = async (
       message: "not authorised!",
     });
 
-  const userJWT: any = jwt.verify(authToken, process.env.JWT_SECRET!);
+  let userJWT: any = "";
+
+  try {
+    userJWT = jwt.verify(authToken, process.env.JWT_SECRET!);
+  } catch (error) {
+    throw new CustomResponseError(404, {
+      message: "not authorised!",
+    });
+  }
 
   const user = await prismaClient.user.findUnique({
     where: { id: userJWT.id, isBlocked: false },
@@ -39,7 +47,7 @@ export const authMiddleware = async (
 export const attachUserToRequest = async (
   req: Request,
   _res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   let authToken = req.cookies[AUTH_COOKIE_NAME];
 

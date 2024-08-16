@@ -9,6 +9,7 @@ import { authRouter } from "./routers/authRouter";
 import cookieParser from "cookie-parser";
 import { CustomResponseError } from "@repo/utils";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware";
+import { productRouter } from "./routers/productRouter";
 
 const app: Express = express();
 
@@ -24,10 +25,12 @@ app
       origin: process.env.CORS_ORIGIN,
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE"],
-    }),
+    })
   );
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/products", productRouter);
+
 app.get(["/status", "/"], async (req, res) => {
   res.json({ ok: true });
 });
