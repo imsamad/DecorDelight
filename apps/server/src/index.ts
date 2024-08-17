@@ -1,12 +1,13 @@
 require("dotenv").config({
   path: `${process.cwd()}/.env`,
 });
+
 import "express-async-errors";
 import { server } from "./server";
 
 const port = process.env.PORT || 4000;
 
-server.listen(port, () => {
+server.listen(port, async () => {
   console.log(`server running on ${port}`);
 });
 

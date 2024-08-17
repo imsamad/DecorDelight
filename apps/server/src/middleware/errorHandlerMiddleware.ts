@@ -8,7 +8,7 @@ export const errorHandlerMiddleware = (
   err: any,
   _req: Request,
   res: Response,
-  _next: NextFunction,
+  _next: NextFunction
 ) => {
   console.log("error from errorHandlerMiddleware =======================: ");
   console.log(err);
@@ -19,7 +19,7 @@ export const errorHandlerMiddleware = (
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const _err: any = err;
-    console.log(err.code);
+
     switch (_err.code) {
       case "P2002":
         // handling duplicate key errors

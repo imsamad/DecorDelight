@@ -74,11 +74,12 @@ export const getMyProducts = async (req: Request, res: Response) => {
     id: req.params.productId,
   };
 
-  console.log(where);
-
   res.json({
     product: await prismaClient.product.findMany({
       where,
+      select: {
+        id: true,
+      },
     }),
   });
 };

@@ -13,11 +13,14 @@
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "db:generate": "pnpm prisma generate"
+    "db:generate": "pnpm prisma generate",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.18.0",
-    "prisma": "^5.18.0"
+    "prisma": "^5.18.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

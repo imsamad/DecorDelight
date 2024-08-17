@@ -106,3 +106,17 @@ export const ProductSchema = z
   })
   .strict();
 //  satisfies z.Schema<Prisma.ProductUncheckedCreateInput>;
+
+export const CartItemSchema = z.object({
+  productId: ObjectIdFormatSchema,
+  quantity: z.coerce.number().nonnegative(),
+});
+
+export const OrderSchema = z.object({
+  order: z.array(
+    z.object({
+      cartItemId: ObjectIdFormatSchema,
+      quantity: z.coerce.number().nonnegative().min(1),
+    })
+  ),
+});

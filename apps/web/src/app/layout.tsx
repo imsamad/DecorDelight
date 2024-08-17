@@ -9,7 +9,7 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="w-screen overflow-x-hidden min-h-screen overflow-y-auto">
         <NextAuthWrapper>{children}</NextAuthWrapper>
         <Toaster />
       </body>

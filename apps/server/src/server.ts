@@ -10,6 +10,8 @@ import cookieParser from "cookie-parser";
 import { CustomResponseError } from "@repo/utils";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware";
 import { productRouter } from "./routers/productRouter";
+import { cartRouter } from "./routers/cartRouter";
+import { orderRouter } from "./routers/orderRouter";
 
 const app: Express = express();
 
@@ -29,6 +31,8 @@ app
   );
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/carts", cartRouter);
+app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/products", productRouter);
 
 app.get(["/status", "/"], async (req, res) => {

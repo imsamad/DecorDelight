@@ -42,9 +42,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  products Product[]
-  reviews  Review[]
-  carts    CartItem[]
+  products  Product[]
+  reviews   Review[]
+  carts     CartItem[]
+  orders    Order[]
+  addresses Address[]
 }
 
 model Product {
@@ -55,16 +57,16 @@ model Product {
   dimension       ProductDimension
   slug            String           @unique
   quantityInStock Int
-  reviewsCount    Int @default(0)
-  tableProps   TTableProps[]
-  medias       TMedia[]
-  
+  reviewsCount    Int              @default(0)
+  tableProps      TTableProps[]
+  medias          TMedia[]
+
   reviews      Review[]
   partOfCarts  CartItem[]
   partOfOrders OrderItem[]
 
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  userId String         @db.ObjectId
+  user   User           @relation(fields: [userId], references: [id])
   status EProductStatus @default(DRAFT)
   // orders Order[]
 }
@@ -111,20 +113,24 @@ model Order {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   items         OrderItem[]
   totalAmount   Int
-  itemsPrice Int
+  itemsPrice    Int
   shippingPrice Int
-  taxPrice Int
+  taxPrice      Int
 
-  paidAt DateTime?
+  paidAt   DateTime?
   paidJson Json?
-  address Address
-  
-  outOfDelivery DateTime?
-  delivered DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
+  addressId String?  @db.ObjectId
+  address   Address? @relation(fields: [addressId], references: [id])
+
+  outOfDelivery DateTime?
+  delivered     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+}
 
 model OrderItem {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -146,12 +152,11 @@ type TTableProps {
   value String
 }
 
- 
 type TMedia {
   type      EMediaEnum
   url       String
-  isDefault Boolean   @default(false)
-  orderNo Int
+  isDefault Boolean    @default(false)
+  orderNo   Int
 }
 
 enum EMediaEnum {
@@ -178,7 +183,6 @@ model Profile {
   dateOfBirth DateTime?
   currentCTC  Int?
 
-  address Address?
 }
 
 enum Gender_Enum {
@@ -196,11 +200,20 @@ type TInstitute {
   url  String?
 }
 
-type Address {
-  city      String?
-  state     String?
-  country   String?
-  pincode   String?
-  longitude String?
-  latitude  String?
+model Address {
+  isDefault Boolean @default(false)
+
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  city        String
+  state       String
+  country     String
+  phoneNumber String
+  pincode     String
+  longitude   String?
+  latitude    String?
+
+  orders Order[]
+
+  User      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
 }
