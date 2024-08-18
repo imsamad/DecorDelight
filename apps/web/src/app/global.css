@@ -70,7 +70,9 @@
   .log {
     border: 2px solid red;
   }
-
+  .inputLabel {
+    @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+  }
   .inputErrorMsg {
     @apply text-sm font-medium text-destructive mt-2;
   }

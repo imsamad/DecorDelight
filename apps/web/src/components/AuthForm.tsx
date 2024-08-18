@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+
 import {
   LoginSchema,
   OTPSchema,
@@ -8,6 +9,7 @@ import {
   TOtpSchema,
   TSignupSchema,
 } from "@repo/utils";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -43,7 +45,7 @@ const AuthForm = () => {
   const { toast } = useToast();
   const pathname = usePathname();
   const params = useSearchParams();
-  const redirectTo = params.get("redirectTo") || "/profile";
+  const redirectTo = params.get("redirectTo") || "/me";
   const router = useRouter();
 
   const [step, setStep] = useState<"signup" | "login" | "otp">(
@@ -51,7 +53,7 @@ const AuthForm = () => {
       ? "signup"
       : pathname.includes("login")
         ? "login"
-        : "otp",
+        : "otp"
   );
 
   const loginForm = useForm<TLoginSchema>({
@@ -79,7 +81,6 @@ const AuthForm = () => {
   });
 
   const handleLoginSubmit = async (userData: TLoginSchema) => {
-    await new Promise((resolve) => setTimeout(resolve, 6000));
     try {
       await fetcher("/auth/login", "POST", userData);
 
@@ -132,7 +133,7 @@ const AuthForm = () => {
   const startTimer = () => {
     const min = parseInt(
       process.env.NEXT_PUBLIC_OTP_RETRY_IN_MIN! as string,
-      10,
+      10
     );
 
     flushSync(() => {

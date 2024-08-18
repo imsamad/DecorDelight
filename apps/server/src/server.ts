@@ -5,6 +5,8 @@ require("dotenv").config({
 import express, { type Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
+import fileUpload from "express-fileupload";
+
 import { authRouter } from "./routers/authRouter";
 import cookieParser from "cookie-parser";
 import { CustomResponseError } from "@repo/utils";
@@ -12,6 +14,8 @@ import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware";
 import { productRouter } from "./routers/productRouter";
 import { cartRouter } from "./routers/cartRouter";
 import { orderRouter } from "./routers/orderRouter";
+import path from "path";
+import { assetRouter } from "./routers/assetRouter";
 
 const app: Express = express();
 
@@ -28,12 +32,24 @@ app
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE"],
     })
+  )
+  .use(
+    fileUpload({
+      useTempFiles: true,
+      tempFileDir: path.join(process.cwd(), "__tmp__"),
+      createParentPath: true,
+      safeFileNames: true,
+      uriDecodeFileNames: true,
+      uploadTimeout: 60_000,
+      preserveExtension: true,
+    })
   );
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/carts", cartRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/assets", assetRouter);
 
 app.get(["/status", "/"], async (req, res) => {
   res.json({ ok: true });

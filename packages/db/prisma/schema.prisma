@@ -95,7 +95,6 @@ type TPrice {
 }
 
 enum ECurrencySymbol {
-  USD
   INR
 }
 

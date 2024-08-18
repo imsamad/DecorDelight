@@ -1,13 +1,8 @@
 "use client";
-import { NavigationMenuDemo } from "@/components/Navbar";
 import React from "react";
-
+import { SignUpSchema } from "@repo/utils";
 const HomePage = () => {
-  return (
-    <div>
-      <div className="w-full log"></div>
-    </div>
-  );
+  return <div>Home Page</div>;
 };
 
 export default HomePage;

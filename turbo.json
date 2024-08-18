@@ -40,6 +40,9 @@
     },
     "db:seed": {
       "cache": false
+    },
+    "db:push": {
+      "cache": false
     }
   }
 }

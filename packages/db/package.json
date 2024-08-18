@@ -12,8 +12,9 @@
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist .turbo",
     "db:generate": "pnpm prisma generate",
+    "db:push": "pnpm prisma db push",
     "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {

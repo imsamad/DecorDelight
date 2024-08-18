@@ -8,6 +8,8 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { HTMLInputTypeAttribute } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 type TextFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -17,6 +19,30 @@ type TextFieldProps<T extends FieldValues> = {
 };
 
 const TextField = <T extends FieldValues>({
+  control,
+  name,
+  label = "Label", // Default label text
+  placeholder = "Enter value", // Default placeholder text,
+  type = "text",
+}: TextFieldProps<T> & { type?: HTMLInputTypeAttribute }) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="w-full">
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input type={type} placeholder={placeholder} {...field} min="1" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const TextArea = <T extends FieldValues>({
   control,
   name,
   label = "Label", // Default label text
@@ -30,7 +56,11 @@ const TextField = <T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Textarea
+              placeholder={placeholder}
+              {...field}
+              value={field.value ?? ""}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -42,5 +72,6 @@ const TextField = <T extends FieldValues>({
 const FormFieldWrapper = ({ children }: any) => children;
 
 FormFieldWrapper.TextField = TextField;
+FormFieldWrapper.TextArea = TextArea;
 
 export { FormFieldWrapper };

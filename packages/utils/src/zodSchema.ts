@@ -1,13 +1,26 @@
 import { z } from "zod";
-import { ECurrencySymbol, EMediaEnum, Prisma } from "@repo/db";
+
+// @TODO: These enum ideally must import from @prisma/client, but doing so causing error in client react components.
+
+export enum EMediaEnum {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+  AUDIO = "AUDIO",
+}
+export enum ECurrencySymbol {
+  INR = "INR",
+}
+
+const MediaEnum = z.nativeEnum(EMediaEnum);
+
+const CurrenyEnum = z.nativeEnum(ECurrencySymbol);
 
 export const LoginSchema = z.object({
-  email: z
-    .string({
-      required_error: "email is required",
-      invalid_type_error: "invalid data type",
-    })
-    .email(),
+  email: z.string({
+    required_error: "email is required",
+    invalid_type_error: "invalid data type",
+  }),
+  // .email(),
   password: z
     .string({
       required_error: "Password is required",
@@ -67,32 +80,33 @@ export const ObjectIdParamSchema = (paramName: string) =>
 
 // Product zod schema
 
-const CurrenyEnum = z.nativeEnum(ECurrencySymbol);
-const MediaEnum = z.nativeEnum(EMediaEnum);
-
 const TPriceSchema = z.object({
   amount: z.coerce.number().nonnegative(),
   currency: CurrenyEnum.default(ECurrencySymbol.INR),
-}) satisfies z.Schema<Prisma.TPriceCreateInput>;
+});
+// satisfies z.Schema<Prisma.TPriceCreateInput>;
 
 const ProductDimensionSchema = z.object({
   length: z.coerce.number().nonnegative(),
   width: z.coerce.number().nonnegative(),
   height: z.coerce.number().nonnegative(),
   weight: z.coerce.number().nonnegative(),
-}) satisfies z.Schema<Prisma.ProductDimensionCreateInput>;
+});
+// satisfies z.Schema<Prisma.ProductDimensionCreateInput>;
 
 const TTablePropsSchema = z.object({
   key: z.string(),
   value: z.string(),
-}) satisfies z.Schema<Prisma.TTablePropsCreateInput>;
+});
+// satisfies z.Schema<Prisma.TTablePropsCreateInput>;
 
 const TMediaSchema = z.object({
   url: z.string().url(),
   type: MediaEnum,
   isDefault: z.boolean().default(false),
   orderNo: z.coerce.number().nonnegative(),
-}) satisfies z.Schema<Prisma.TMediaCreateInput>;
+});
+// satisfies z.Schema<Prisma.TMediaCreateInput>;
 
 export const ProductSchema = z
   .object({
@@ -105,7 +119,9 @@ export const ProductSchema = z
     medias: z.array(TMediaSchema).optional(),
   })
   .strict();
-//  satisfies z.Schema<Prisma.ProductUncheckedCreateInput>;
+// satisfies z.Schema<Prisma.ProductUncheckedCreateInput>;
+
+export type TProductSchema = z.infer<typeof ProductSchema>;
 
 export const CartItemSchema = z.object({
   productId: ObjectIdFormatSchema,
