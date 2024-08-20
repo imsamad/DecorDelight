@@ -1,8 +1,8 @@
-"use client";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { LogInIcon, LogOut, Plus, ShoppingCart, User } from "lucide-react";
+import { LogInIcon, Search, ShoppingCart, UserCircleIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import { authOption } from '@/lib/authOption';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,64 +10,96 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import LoadingButton from "./LoadingButton";
+} from '@/components/ui/dropdown-menu';
+import { LogoutDropdownMenuItem } from './LogoutDropdownMenuItem';
 
-export const Navbar = () => {
-  const { status } = useSession();
+export const Navbar = async () => {
+  const session = await getServerSession(authOption);
+
+  const isLoggedIn = !!session?.user.id;
+
   return (
-    <div className="w-full bg-blue-300 px-8 py-6 flex justify-between items-center">
-      <Link href="/">
-        <h2 className="text-blue-700 mt-10 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-          Hello
-        </h2>
-      </Link>
+    <nav className='bg-transparent backdrop-blur-md fixed top-0 left-0 right-0 z-50 px-6 py-4 border-2 border-b-slate-200'>
+      <div className='container mx-auto flex justify-between items-center p-0'>
+        <div className='text-2xl font-bold'>
+          <Link href='/'>Antique</Link>
+        </div>
 
-      <div className="flex gap-2 items-center">
-        {status == "authenticated" ? (
-          <>
-            <Link href="/carts">
-              <Button size="sm" variant="outline">
-                <ShoppingCart />
-              </Button>
-            </Link>
-            <Link href="/orders">
-              <Button size="sm" variant="outline">
-                Orders
-              </Button>
-            </Link>
-            <Link href="/me/products/create">
-              <Button size="sm" variant="outline" className="flex items-center">
-                <Plus className="mr-2 h-4 w-4" /> Product
-              </Button>
-            </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="outline">
-                  <User />
+        <div className='flex-1 max-w-lg hidden md:block'>
+          <SearchBar />
+        </div>
+
+        <div className='flex items-center '>
+          {isLoggedIn ? (
+            <>
+              <Link href='/cart' className=''>
+                <Button variant='ghost' size='sm'>
+                  <ShoppingCart className='w-5 h-5 mr-2' />
+                  My Cart
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-32 -translate-x-8 ">
-                <Link href="/me">
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        ) : (
-          <>
-            <Link href="/login">
-              <Button size="sm" variant="outline">
-                <LogInIcon />
-              </Button>
-            </Link>
-          </>
-        )}
+              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger className='rounded-full'>
+                  <UserCircleIcon className='w-8 h-8' />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className=' -translate-x-5 '>
+                  <DropdownMenuLabel>
+                    <Link className='flex items-center' href='/me'>
+                      <UserCircleIcon className='w-5 h-5 mr-2' />
+                      My Profile
+                    </Link>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Link className='flex items-center' href='/me/orders'>
+                      {session.user.role == 'ADMIN' ? 'All' : 'My'} Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  {session.user.role == 'ADMIN' ? (
+                    <DropdownMenuItem>
+                      <Link className='flex items-center' href='/me/products'>
+                        All Products
+                      </Link>
+                    </DropdownMenuItem>
+                  ) : null}
+                  <DropdownMenuItem>
+                    <Link className='flex items-center' href='/me'>
+                      My Cart
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+
+                  <LogoutDropdownMenuItem />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <Link href='/me'>
+                <Button variant='default' size='sm'>
+                  <LogInIcon className='w-4 h-4 mr-2' /> Login
+                </Button>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
+      {/* <div className='container mx-auto  mt-4 justify-center items-center p-0 block md:hidden'>
+        <SearchBar />
+      </div> */}
+    </nav>
+  );
+};
+
+const SearchBar = () => {
+  return (
+    <div className='relative'>
+      <input
+        type='text'
+        placeholder='Search...'
+        className='w-full py-2 px-4 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+      />
+      <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500' />
     </div>
   );
 };

@@ -1,71 +1,68 @@
-import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
-import { CustomResponseError } from "@repo/utils";
-import { prismaClient } from "@repo/db";
-import { AUTH_COOKIE_NAME } from "../lib/const";
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import { CustomResponseError } from '@repo/utils';
+import { EUserRole, prismaClient } from '@repo/db';
+import { AUTH_COOKIE_NAME } from '../lib/const';
 
-export const authMiddleware = async (
+export const requireAuth = async (
   req: Request,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ) => {
-  let authToken = req.cookies[AUTH_COOKIE_NAME];
+  await attachUserToRequest(req, res);
 
-  authToken = authToken ? authToken : req.headers.authorization?.split(" ")[1];
-
-  if (!authToken)
+  if (!req.user?.id)
     throw new CustomResponseError(404, {
-      message: "not authorised!",
+      message: 'not authorised',
     });
 
-  let userJWT: any = "";
+  next();
+};
 
-  try {
-    userJWT = jwt.verify(authToken, process.env.JWT_SECRET!);
-  } catch (error) {
+export const requireAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  await attachUserToRequest(req, res);
+  if (req.user?.role != EUserRole.ADMIN)
     throw new CustomResponseError(404, {
-      message: "not authorised!",
+      message: 'not authorised, you are not admin!',
     });
-  }
-
-  const user = await prismaClient.user.findUnique({
-    where: { id: userJWT.id, isBlocked: false },
-  });
-
-  if (!user)
-    throw new CustomResponseError(404, {
-      message: "not authorised!",
-    });
-
-  user.password = "";
-
-  req.user = user;
-
   next();
 };
 
 export const attachUserToRequest = async (
   req: Request,
-  _res: Response,
-  next: NextFunction
-) => {
+  _: Response,
+  next?: NextFunction
+): Promise<Request | void> => {
   let authToken = req.cookies[AUTH_COOKIE_NAME];
 
-  authToken = authToken ? authToken : req.headers.authorization?.split(" ")[1];
+  authToken = authToken ? authToken : req.headers.authorization?.split(' ')[1];
 
-  if (!authToken) return next();
+  if (!authToken) {
+    next && next();
+    return;
+  }
 
   const userJWT: any = jwt.verify(authToken, process.env.JWT_SECRET!);
 
   const user = await prismaClient.user.findUnique({
-    where: { id: userJWT.id, isBlocked: false },
+    where: {
+      id: userJWT.id,
+      blockedAt: undefined,
+      emailVerifiedAt: { not: null },
+    },
   });
 
-  if (!user) return next();
+  if (!user) {
+    next && next();
+    return;
+  }
 
-  user.password = "";
+  user.password = '';
 
   req.user = user;
-
-  next();
+  next && next();
 };

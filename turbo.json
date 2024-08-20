@@ -43,6 +43,9 @@
     },
     "db:push": {
       "cache": false
+    },
+    "studio": {
+      "cache": false
     }
   }
 }

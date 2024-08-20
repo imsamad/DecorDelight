@@ -1,22 +1,22 @@
-import { prismaClient, User } from "@repo/db";
-import * as bcryptjs from "bcryptjs";
+import { prismaClient, User } from '@repo/db';
+import * as bcryptjs from 'bcryptjs';
 
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import {
   CustomError,
   CustomResponseError,
   generateOTP,
   TCustomError,
   TCustomResponseError,
-} from "@repo/utils";
+} from '@repo/utils';
 
-import { sendEmail } from "../lib/sendEmail";
-import { AUTH_COOKIE_NAME } from "../lib/const";
+import { sendEmail } from '../lib/sendEmail';
+import { AUTH_COOKIE_NAME } from '../lib/const';
 
 export const logout = async (_: Request, res: Response) => {
-  res.cookie(AUTH_COOKIE_NAME, "", { maxAge: 0 });
-  res.json("logout!");
+  res.cookie(AUTH_COOKIE_NAME, '', { maxAge: 0 });
+  res.json('logout!');
 };
 
 export const getMe = async (req: Request, res: Response) => {
@@ -33,12 +33,12 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const user = await prismaClient.user.findUnique({
-    where: { email, emailVerified: { not: null } },
+    where: { email, emailVerifiedAt: { not: null }, blockedAt: undefined },
   });
 
   if (!user) {
     throw new CustomResponseError(404, {
-      message: { email: "user not found" },
+      message: { email: 'user not found' },
     });
   }
 
@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
 
   if (!isPwdValid)
     throw new CustomResponseError(404, {
-      message: { password: "invalid password!" },
+      message: { password: 'invalid password!' },
     });
 
   const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
@@ -57,9 +57,9 @@ export const login = async (req: Request, res: Response) => {
   res.cookie(AUTH_COOKIE_NAME, jwtToken, {
     // ms
     maxAge: 60 * 60 * 1000 * (parseInt(process.env.JWT_EXPIRE_IN_HR!, 10) || 1),
-    secure: process.env.NODE_ENV == "production",
+    secure: process.env.NODE_ENV == 'production',
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: 'strict',
   });
 
   res.json({
@@ -70,13 +70,14 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const signUp = async (req: Request, res: Response) => {
-  let _otp = "";
+  let _otp = '';
   const body: {
     email: string;
     password: string;
+    fullName: string;
   } = req.body;
 
-  let { email, password } = body;
+  let { email, password, fullName } = body;
 
   if (
     await prismaClient.user.findUnique({
@@ -86,7 +87,7 @@ export const signUp = async (req: Request, res: Response) => {
     })
   ) {
     throw new CustomResponseError(404, {
-      message: { email: "This email is already taken!" },
+      message: { email: 'This email is already taken!' },
     });
   }
 
@@ -96,10 +97,10 @@ export const signUp = async (req: Request, res: Response) => {
     try {
       const userCreated = await txn.user.create({
         data: {
-          fullName: "",
           email,
           password: bcryptjs.hashSync(password, salt),
-          emailVerified: null,
+          emailVerifiedAt: null,
+          fullName,
           phoneNumber: null,
           username: Math.random().toString().slice(10),
         },
@@ -117,7 +118,7 @@ export const signUp = async (req: Request, res: Response) => {
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS)
         await sendEmail({
           to: email,
-          subject: "Email confirmation OTP!",
+          subject: 'Email confirmation OTP!',
           html: `<h3>OTP:${token}</h3>`,
         });
 
@@ -132,8 +133,8 @@ export const signUp = async (req: Request, res: Response) => {
 
   res.json({
     userId: user.id,
-    message: "Registred successfully, plz verify email!",
-    otp: process.env.NODE_ENV == "production" ? undefined : _otp,
+    message: 'Registred successfully, plz verify email!',
+    otp: process.env.NODE_ENV == 'production' ? undefined : _otp,
   });
 };
 
@@ -146,17 +147,17 @@ export const confirmOTP = async (req: Request, res: Response) => {
 
   if (!token)
     throw new CustomResponseError(404, {
-      message: "OTP Not Found!",
+      message: 'OTP Not Found!',
     });
 
   const tenMinutesAgo = new Date(
     new Date().getTime() -
-      parseInt(process.env.OTP_EXPIRE_IN_MIN!, 10) * 60 * 1000,
+      parseInt(process.env.OTP_EXPIRE_IN_MIN!, 10) * 60 * 1000
   );
 
   if (tenMinutesAgo >= new Date(token?.createdAt)) {
     throw new CustomResponseError(403, {
-      message: "Token expired!",
+      message: 'Token expired!',
     });
   }
 
@@ -164,7 +165,7 @@ export const confirmOTP = async (req: Request, res: Response) => {
   const user = await prismaClient.user.update({
     where: { id: token.identifier },
     data: {
-      emailVerified: new Date(),
+      emailVerifiedAt: new Date(),
     },
   });
 
@@ -177,7 +178,7 @@ export const confirmOTP = async (req: Request, res: Response) => {
   });
 
   res.json({
-    message: "Authorised",
+    message: 'Authorised',
   });
 };
 
@@ -190,17 +191,17 @@ export const resendOTP = async (req: Request, res: Response) => {
 
   if (!vToken)
     throw new CustomResponseError(404, {
-      message: "What is this!",
+      message: 'What is this!',
     });
   else {
     const minutesAgo = new Date(
       new Date().getTime() -
-        parseInt(process.env.OTP_RETRY_IN_MIN!, 10) * 60 * 1000,
+        parseInt(process.env.OTP_RETRY_IN_MIN!, 10) * 60 * 1000
     );
 
     if (minutesAgo < new Date(vToken.createdAt)) {
       throw new CustomResponseError(403, {
-        message: "Had sent!",
+        message: 'Had sent!',
       });
     }
   }
@@ -211,7 +212,7 @@ export const resendOTP = async (req: Request, res: Response) => {
 
   if (!user)
     throw new CustomResponseError(404, {
-      message: "What is this!",
+      message: 'What is this!',
     });
 
   const token = generateOTP(6);
@@ -231,11 +232,11 @@ export const resendOTP = async (req: Request, res: Response) => {
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS)
     await sendEmail({
       to: user.email,
-      subject: "Email confirmation OTP!",
+      subject: 'Email confirmation OTP!',
       html: `<h3>OTP:${token}</h3>`,
     });
 
   res.json({
-    mesaage: "OTP sent!",
+    mesaage: 'OTP sent!',
   });
 };

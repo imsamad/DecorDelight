@@ -1,18 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 declare global {
-  var prisma: PrismaClient;
+  var prismaClient: PrismaClient;
 }
 
-const prisma =
-  global.prisma ||
+const prismaClient =
+  global.prismaClient ||
   new PrismaClient({
-    log: ["query", "info", "warn", "error"],
+    log: ['error'],
   });
 
-if (process.env.NODE_ENV != "production") {
-  global.prisma = prisma;
+if (process.env.NODE_ENV != 'production') {
+  global.prismaClient = prismaClient;
 }
 
-export { prisma as prismaClient };
-export * from "@prisma/client";
+export { prismaClient as prismaClient };
+export * from '@prisma/client';

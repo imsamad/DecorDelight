@@ -15,7 +15,8 @@
     "clean": "rm -rf dist .turbo",
     "db:generate": "pnpm prisma generate",
     "db:push": "pnpm prisma db push",
-    "db:seed": "ts-node prisma/seed.ts"
+    "db:seed": "ts-node prisma/seed.ts",
+    "studio": "prisma studio --browser none"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -27,6 +28,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",
+    "bcryptjs": "^2.4.3",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   }

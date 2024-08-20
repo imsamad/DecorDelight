@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import path from "path";
 
 export function generateOTP(numDigits: number = 4): string {
   if (numDigits < 1) {

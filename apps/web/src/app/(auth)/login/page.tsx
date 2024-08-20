@@ -1,7 +1,11 @@
-import AuthForm from "@/components/AuthForm";
+import { AuthForm } from '@/components/AuthForm';
 
-export const LoginPage = () => {
-  return <AuthForm />;
+const LoginPage = () => {
+  return (
+    <div className='p-3'>
+      <AuthForm />
+    </div>
+  );
 };
 
 export default LoginPage;

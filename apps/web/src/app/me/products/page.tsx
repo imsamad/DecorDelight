@@ -1,9 +1,15 @@
-import { requireAuth } from "@/lib/requireAuth";
+import { requireAdmin } from '@/lib/requireAuth';
+import { prismaClient } from '@repo/db';
+import ProductList from './ProductList';
 
-const ProductList = async () => {
-  const session = await requireAuth("/products");
+const ProductListPage = async () => {
+  const session = await requireAdmin('/products');
 
-  return <div>ProductList</div>;
+  const products = await prismaClient.product.findMany({
+    // where: { userId: session.user.id },
+  });
+
+  return <ProductList products={products} />;
 };
 
-export default ProductList;
+export default ProductListPage;

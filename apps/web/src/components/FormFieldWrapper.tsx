@@ -1,15 +1,15 @@
-"use client";
-import { type Control, FieldValues, Path } from "react-hook-form";
+'use client';
+import { type Control, FieldValues, Path } from 'react-hook-form';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { HTMLInputTypeAttribute } from "react";
-import { Textarea } from "@/components/ui/textarea";
+} from './ui/form';
+import { Input } from './ui/input';
+import { HTMLInputTypeAttribute } from 'react';
+import { Textarea } from '@/components/ui/textarea';
 
 type TextFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -21,19 +21,25 @@ type TextFieldProps<T extends FieldValues> = {
 const TextField = <T extends FieldValues>({
   control,
   name,
-  label = "Label", // Default label text
-  placeholder = "Enter value", // Default placeholder text,
-  type = "text",
+  label = 'Label', // Default label text
+  placeholder = 'Enter value', // Default placeholder text,
+  type = 'text',
 }: TextFieldProps<T> & { type?: HTMLInputTypeAttribute }) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className='w-full'>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input type={type} placeholder={placeholder} {...field} min="1" />
+            <Input
+              type={type}
+              step='0.01'
+              placeholder={placeholder}
+              {...field}
+              min='1'
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -45,8 +51,8 @@ const TextField = <T extends FieldValues>({
 const TextArea = <T extends FieldValues>({
   control,
   name,
-  label = "Label", // Default label text
-  placeholder = "Enter value", // Default placeholder text
+  label = 'Label', // Default label text
+  placeholder = 'Enter value', // Default placeholder text
 }: TextFieldProps<T>) => {
   return (
     <FormField
@@ -59,7 +65,7 @@ const TextArea = <T extends FieldValues>({
             <Textarea
               placeholder={placeholder}
               {...field}
-              value={field.value ?? ""}
+              value={field.value ?? ''}
             />
           </FormControl>
           <FormMessage />

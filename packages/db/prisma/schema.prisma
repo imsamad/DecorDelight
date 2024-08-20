@@ -30,11 +30,10 @@ model User {
   name        String?
   image       String?
 
-  emailVerified       DateTime?
-  phoneNumberVerified DateTime?
+  emailVerifiedAt       DateTime?
+  phoneNumberVerifiedAt DateTime?
 
-  isBlocked Boolean @default(false)
-  isAdmin   Boolean @default(false)
+  blockedAt DateTime?
 
   profile         Profile?
   confirmationOTP VerificationToken?
@@ -42,11 +41,18 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  role EUserRole @default(USER)
+
   products  Product[]
   reviews   Review[]
   carts     CartItem[]
   orders    Order[]
   addresses Address[]
+}
+
+enum EUserRole {
+  USER
+  ADMIN
 }
 
 model Product {
@@ -115,21 +121,29 @@ model Order {
   itemsPrice    Int
   shippingPrice Int
   taxPrice      Int
-
+  
+  paymentMode EPaymentMode?
   paidAt   DateTime?
   paidJson Json?
+  stripeSessionId String?
 
   addressId String?  @db.ObjectId
   address   Address? @relation(fields: [addressId], references: [id])
-
+  
   outOfDelivery DateTime?
   delivered     DateTime?
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
 }
+
+enum EPaymentMode {
+  COD
+  ONLINE
+} 
 
 model OrderItem {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -181,7 +195,7 @@ model Profile {
   gender      Gender_Enum?
   dateOfBirth DateTime?
   currentCTC  Int?
-
+  
 }
 
 enum Gender_Enum {
@@ -202,7 +216,9 @@ type TInstitute {
 model Address {
   isDefault Boolean @default(false)
 
+  userName String
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  landmark String
   city        String
   state       String
   country     String

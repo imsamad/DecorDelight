@@ -1,19 +1,19 @@
-import { type AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { prismaClient } from "@repo/db";
-import * as bcrypt from "bcryptjs";
-import { DefaultSession } from "next-auth";
+import { type AuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { EUserRole, prismaClient } from '@repo/db';
+import * as bcrypt from 'bcryptjs';
+import { DefaultSession } from 'next-auth';
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 
 export const authOption: AuthOptions = {
   cookies: {
     sessionToken: {
-      name: `${VERCEL_DEPLOYMENT ? "__Secure-" : ""}next-auth.session-token`,
+      name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "lax",
-        path: "/",
+        sameSite: 'lax',
+        path: '/',
         // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
         domain: VERCEL_DEPLOYMENT
           ? `.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
@@ -23,18 +23,18 @@ export const authOption: AuthOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: parseInt(process.env.JWT_EXPIRE_IN_HR!, 10) * 60 * 60,
   },
   pages: {
-    error: "/login",
+    error: '/login',
   },
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email', placeholder: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials: any) {
         const email = credentials?.email;
@@ -43,15 +43,19 @@ export const authOption: AuthOptions = {
         if (!email || !password) return null;
         try {
           const user = await prismaClient.user.findFirst({
-            where: { email, emailVerified: { not: null } },
+            where: {
+              email,
+              emailVerifiedAt: { not: null },
+              blockedAt: undefined,
+            },
           });
-
           if (user && (await bcrypt.compare(password, user.password))) {
             return {
               email,
               id: user.id as string,
               username: user.username,
-              role: "USER",
+              fullName: user.fullName,
+              role: user.role,
             };
           } else return null;
         } catch (err) {
@@ -71,6 +75,8 @@ export const authOption: AuthOptions = {
       if (user?.username) token.username = user.username;
       // @ts-ignore
       if (user?.role) token.role = user.role;
+      // @ts-ignore
+      if (user?.fullName) token.fullName = user.fullName;
 
       return token;
     },
@@ -82,18 +88,20 @@ export const authOption: AuthOptions = {
       session.user.username = token?.username! as string;
       // @ts-ignore
       session.user.role = token.role! as string;
+      session.user.fullName = token.fullName! as string;
 
       return session;
     },
   },
 };
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
       username: string;
-      role: "ADMIN" | "USER";
-    } & DefaultSession["user"];
+      role: EUserRole;
+      fullName: string;
+    } & DefaultSession['user'];
   }
 }

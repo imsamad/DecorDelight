@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authMiddleware } from "../middleware/authMiddleware";
+import { requireAdmin } from "../middleware/authMiddleware";
 import { validateRequest } from "../middleware/validateRequest";
 import { ObjectIdParamSchema, ProductSchema } from "@repo/utils";
 import {
@@ -15,23 +15,23 @@ import { EProductStatus } from "@repo/db";
 
 const productRouter: Router = Router();
 
-productRouter.get("/my", authMiddleware, getMyProducts);
+productRouter.get("/my", requireAdmin, getMyProducts);
 
 productRouter
   .route("/")
-  .post(authMiddleware, validateRequest(ProductSchema, "body"), createProduct)
+  .post(requireAdmin, validateRequest(ProductSchema, "body"), createProduct)
   .get(getProducts);
 
 productRouter
   .route("/:productId")
   .put(
-    authMiddleware,
+    requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
     validateRequest(ProductSchema, "body"),
     updateProduct
   )
   .delete(
-    authMiddleware,
+    requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
     deleteProduct
   )
@@ -40,7 +40,7 @@ productRouter
 productRouter
   .route("/publised/:productId")
   .put(
-    authMiddleware,
+    requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
     publishProduct(EProductStatus.PUBLISHED)
   );
@@ -48,7 +48,7 @@ productRouter
 productRouter
   .route("/unpublised/:productId")
   .put(
-    authMiddleware,
+    requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
     publishProduct(EProductStatus.DRAFT)
   );

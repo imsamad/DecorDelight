@@ -1,7 +1,7 @@
-import { prismaClient, EProductStatus } from "@repo/db";
-import { Request, Response } from "express";
-import { generateOTP } from "@repo/utils";
-import slugify from "slugify";
+import { prismaClient, EProductStatus } from '@repo/db';
+import { Request, Response } from 'express';
+import { generateOTP } from '@repo/utils';
+import slugify from 'slugify';
 
 export const createProduct = async (req: Request, res: Response) => {
   res.json({
@@ -20,8 +20,6 @@ export const updateProduct = async (req: Request, res: Response) => {
     id: req.params.productId,
   };
 
-  if (!req.user?.isAdmin) where.userId = req.user?.id!;
-
   const { userId, slug, ...rest } = req.body;
 
   res.json({
@@ -35,9 +33,8 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   const where: any = {
     id: req.params.productId,
+    userId: req.user?.id!,
   };
-
-  if (!req.user?.isAdmin) where.userId = req.user?.id!;
 
   res.json({
     product: await prismaClient.product.delete({
@@ -63,7 +60,7 @@ export const getProducts = async (req: Request, res: Response) => {
   res.json({
     product: await prismaClient.product.findMany({
       where: {
-        status: "PUBLISHED",
+        status: EProductStatus.PUBLISHED,
       },
     }),
   });
@@ -88,9 +85,9 @@ export const publishProduct =
   (status: EProductStatus) => async (req: Request, res: Response) => {
     const where: any = {
       id: req.params.productId,
+      status:
+        status == 'DRAFT' ? EProductStatus.PUBLISHED : EProductStatus.DRAFT,
     };
-
-    if (!req.user?.isAdmin) where.userId = req.user?.id!;
 
     res.json({
       product: await prismaClient.product.update({

@@ -63,6 +63,7 @@ export const errorHandlerMiddleware = (
   }
 
   if (err instanceof TCustomError) {
+    console.log("err.errors:", err.errors);
     return res.status(404).json(err.errors);
   }
 

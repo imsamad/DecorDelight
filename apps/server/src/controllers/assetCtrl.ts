@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { deleteFile, saveAssetLocally } from "../lib/saveLocally";
-import { cloduinaryUploader } from "../lib/cloudinary";
-import { CustomResponseError } from "@repo/utils";
+import { Request, Response } from 'express';
+import { deleteFile, saveAssetLocally } from '../lib/saveLocally';
+import { cloduinaryUploader } from '../lib/cloudinary';
+import { CustomResponseError } from '@repo/utils';
 
 export const uploadAsset = async (req: Request, res: Response) => {
   const filePath = await saveAssetLocally(req);
@@ -11,12 +11,11 @@ export const uploadAsset = async (req: Request, res: Response) => {
 
     await deleteFile(filePath);
 
-    res.json({
+    return res.json({
       url,
     });
-  }
-
-  throw new CustomResponseError(404, {
-    message: "Provide file",
-  });
+  } else
+    throw new CustomResponseError(404, {
+      message: 'Provide file',
+    });
 };
