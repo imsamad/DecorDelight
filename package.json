@@ -19,8 +19,7 @@
     "deploy:render:start": "pnpm turbo run start -F=server"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^2.0.13"
+    "prettier": "^3.2.5"
   },
   "prisma": {
     "schema": "./packages/db/prisma/schema.prisma"
@@ -29,5 +28,7 @@
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {}
+  "dependencies": {
+    "turbo": "^2.0.13"
+  }
 }
