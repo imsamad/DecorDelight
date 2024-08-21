@@ -1,7 +1,8 @@
-import { prismaClient } from '@repo/db';
-import { requireAuth } from '@/lib/requireAuth';
-import { notFound } from 'next/navigation';
-import OrderDetails from './OrderDetails';
+import { prismaClient } from "@repo/db";
+import { requireAuth } from "@/lib/requireAuth";
+import { notFound } from "next/navigation";
+import OrderDetails from "./OrderDetails";
+import { PageWrapper } from "@/components/PageWrapper";
 
 const OrderDetailPage = async ({
   params: { orderId },
@@ -10,7 +11,7 @@ const OrderDetailPage = async ({
 }) => {
   const session = await requireAuth(`/me/orders/${orderId}`);
   const where: any = { id: orderId };
-  if (session.user.role != 'ADMIN') where.userId = session.user.id;
+  if (session.user.role != "ADMIN") where.userId = session.user.id;
 
   const order = await prismaClient.order.findFirst({
     where,
@@ -31,7 +32,11 @@ const OrderDetailPage = async ({
 
   if (!order) notFound();
 
-  return <OrderDetails order={order} addresses={addresses} />;
+  return (
+    <PageWrapper>
+      <OrderDetails order={order} addresses={addresses} />
+    </PageWrapper>
+  );
 };
 
 export default OrderDetailPage;

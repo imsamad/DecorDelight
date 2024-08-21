@@ -1,12 +1,12 @@
-import fs from 'fs';
+import fs from "fs";
 const envFilePath = `${process.cwd()}/.env`;
-require('dotenv').config({
+require("dotenv").config({
   path: envFilePath,
 });
 
-import 'express-async-errors';
-import { server } from './server';
-import { EUserRole } from '@repo/db';
+import "express-async-errors";
+import { server } from "./server";
+import { EUserRole } from "@repo/db";
 
 if (!fs.existsSync(envFilePath)) process.exit(1);
 

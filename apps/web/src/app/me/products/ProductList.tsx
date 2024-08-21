@@ -1,5 +1,5 @@
-'use client';
-import { Button } from '@/components/ui/button';
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,26 +8,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { fetcher } from '@/lib/fetcher';
-import { Product } from '@repo/db';
-import { TObjectIdFormatSchema } from '@repo/utils';
-import { Edit2, Trash2 } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
+} from "@/components/ui/table";
+import { fetcher } from "@/lib/fetcher";
+import { Product } from "@repo/db";
+import { TObjectIdFormatSchema } from "@repo/utils";
+import { Edit2, Trash2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 const ProductList = ({ products: productsProp }: { products: Product[] }) => {
   const [products, setProducts] = useState(productsProp);
 
   const getProducts = async () => {
-    fetcher(`/products/my`, 'GET').then(({ products }) =>
-      setProducts(products)
+    fetcher(`/products/my`, "GET").then(({ products }) =>
+      setProducts(products),
     );
   };
 
   const handleDelete = async (productId: TObjectIdFormatSchema) => {
-    fetcher(`/products/${productId}`, 'DELETE')
+    fetcher(`/products/${productId}`, "DELETE")
       .then(() => {
         setProducts((p) => p.filter(({ id }) => id != productId));
       })
@@ -35,8 +35,8 @@ const ProductList = ({ products: productsProp }: { products: Product[] }) => {
   };
 
   return (
-    <div className='max-w-screen-lg mx-auto'>
-      <h2 className='scroll-m-20 text-center text-3xl font-semibold tracking-tight my-6'>
+    <div className="max-w-screen-lg mx-auto">
+      <h2 className="scroll-m-20 text-center text-3xl font-semibold tracking-tight my-6">
         List of products
       </h2>
       <Table>
@@ -55,25 +55,25 @@ const ProductList = ({ products: productsProp }: { products: Product[] }) => {
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.id}>
-              <TableCell className='font-medium'>
+              <TableCell className="font-medium">
                 {product.medias[0]?.url ? (
                   <Image
                     alt={product.title}
                     src={product.medias[0].url}
-                    width='80'
+                    width="80"
                     height={80}
                   />
                 ) : null}
               </TableCell>
-              <TableCell className='font-medium'>{product.title}</TableCell>
+              <TableCell className="font-medium">{product.title}</TableCell>
               <TableCell>
                 {product.price.currency}
                 &nbsp;
                 {product.price.amount}
               </TableCell>
               <TableCell>{product.quantityInStock}</TableCell>
-              <TableCell className='text-right'>
-                <div className='flex'>
+              <TableCell className="text-right">
+                <div className="flex">
                   <p>
                     {product.dimension.height}
                     &nbsp;x &nbsp;
@@ -89,18 +89,18 @@ const ProductList = ({ products: productsProp }: { products: Product[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className='flex gap-2'>
+                <div className="flex gap-2">
                   <Button
-                    size='sm'
-                    variant='destructive'
+                    size="sm"
+                    variant="destructive"
                     onClick={() => handleDelete(product.id)}
                   >
-                    <Trash2 className='w-4 h-4 mr-2' />
+                    <Trash2 className="w-4 h-4 mr-2" />
                     Delete
                   </Button>
                   <Link href={`/me/products/edit/${product.id}`}>
-                    <Button size='sm' variant='default'>
-                      <Edit2 className='w-4 h-4 mr-2' />
+                    <Button size="sm" variant="default">
+                      <Edit2 className="w-4 h-4 mr-2" />
                       Edit
                     </Button>
                   </Link>

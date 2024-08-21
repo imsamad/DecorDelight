@@ -1,9 +1,9 @@
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
-import { Request, Response } from 'express';
-import { EPaymentMode, EUserRole, prismaClient } from '@repo/db';
-import { CustomResponseError } from '@repo/utils';
-require('dotenv').config({
+import { Request, Response } from "express";
+import { EPaymentMode, EUserRole, prismaClient } from "@repo/db";
+import { CustomResponseError } from "@repo/utils";
+require("dotenv").config({
   path: `${process.cwd()}/.env`,
 });
 
@@ -22,7 +22,7 @@ export const createOrder = async (req: Request, res: Response) => {
   const carts = await prismaClient.cartItem.findMany({
     where: {
       id: { in: cartItemIds },
-      product: { status: 'PUBLISHED' },
+      product: { status: "PUBLISHED" },
     },
     include: {
       product: {
@@ -41,7 +41,7 @@ export const createOrder = async (req: Request, res: Response) => {
     carts.find((c: any) => c.userId != userId)
   )
     throw new CustomResponseError(404, {
-      message: 'Record does not exist',
+      message: "Record does not exist",
     });
 
   let orderItems: any = [];
@@ -54,7 +54,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
     if (!crtItemQty)
       throw new CustomResponseError(404, {
-        message: 'Record (Cart Item) does not exist',
+        message: "Record (Cart Item) does not exist",
       });
 
     let filledQty = Math.min(crtItemQty, cart.product.quantityInStock);
@@ -92,7 +92,7 @@ export const createOrder = async (req: Request, res: Response) => {
   const order = await prismaClient.$transaction(async (txn) => {
     try {
       await Promise.all(
-        productQuantityUpdate.map((p: any) => txn.product.update(p))
+        productQuantityUpdate.map((p: any) => txn.product.update(p)),
       );
       if (deletedCart.length)
         await txn.cartItem.deleteMany({
@@ -103,7 +103,7 @@ export const createOrder = async (req: Request, res: Response) => {
       const itemsPrice: number = orderItems.reduce(
         (acc: number, red: any) =>
           acc + red.priceAtThatTime.amount * red.quantity,
-        0
+        0,
       );
 
       let taxPrice = 0;
@@ -154,7 +154,7 @@ export const removeOrderItem = async (req: Request, res: Response) => {
 
       if (!orderItem || orderItem.order.userId != userId)
         throw new CustomResponseError(404, {
-          message: 'Record not found',
+          message: "Record not found",
         });
 
       const order = orderItem.order;
@@ -186,20 +186,20 @@ export const removeOrderItem = async (req: Request, res: Response) => {
   });
 
   res.json({
-    message: 'Removed',
+    message: "Removed",
   });
 };
 
 export const changeQuantityOfOrderItem = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   const userId = req.user?.id! as string;
   const newQty = Number(req.query.quantity);
   if (newQty == 0) return removeOrderItem(req, res);
   if (isNaN(newQty))
     throw new CustomResponseError(404, {
-      message: 'Quantity must be in valid numeric type',
+      message: "Quantity must be in valid numeric type",
     });
 
   await prismaClient.$transaction(async (txn) => {
@@ -216,7 +216,7 @@ export const changeQuantityOfOrderItem = async (
 
       if (!orderItem || orderItem.order.userId != userId)
         throw new CustomResponseError(404, {
-          message: 'Record not found',
+          message: "Record not found",
         });
 
       const qtyDelta = orderItem.quantity - newQty;
@@ -256,7 +256,7 @@ export const changeQuantityOfOrderItem = async (
   });
 
   res.json({
-    message: 'Changed!',
+    message: "Changed!",
   });
 };
 
@@ -316,11 +316,17 @@ export const addAddressToOrder = async (req: Request, res: Response) => {
       where: { id: addressId, userId },
     })) ||
     !(await prismaClient.order.findFirst({
-      where: { id: orderId, userId },
+      where: {
+        id: orderId,
+        userId,
+        cancelledAt: undefined,
+        outOfDeliveryAt: undefined,
+        deliveredAt: undefined,
+      },
     }))
   )
     throw new CustomResponseError(404, {
-      message: 'Record not found',
+      message: "Record not found",
     });
 
   res.json({
@@ -341,16 +347,22 @@ export const setPaymentMode = async (req: Request, res: Response) => {
 
   if (mode != EPaymentMode.COD && mode != EPaymentMode.ONLINE)
     throw new CustomResponseError(404, {
-      message: 'Record not found',
+      message: "Record not found",
     });
 
   if (
     !(await prismaClient.order.findFirst({
-      where: { id: orderId, userId },
+      where: {
+        id: orderId,
+        userId,
+        cancelledAt: undefined,
+        outOfDeliveryAt: undefined,
+        deliveredAt: undefined,
+      },
     }))
   )
     throw new CustomResponseError(404, {
-      message: 'Record not found',
+      message: "Record not found",
     });
 
   res.json({
@@ -370,7 +382,13 @@ export const getStripePaymentUrl = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   const order = await prismaClient.order.findFirst({
-    where: { userId, id: orderId },
+    where: {
+      userId,
+      id: orderId,
+      cancelledAt: undefined,
+      outOfDeliveryAt: undefined,
+      deliveredAt: undefined,
+    },
     include: {
       items: {
         select: {
@@ -383,13 +401,13 @@ export const getStripePaymentUrl = async (req: Request, res: Response) => {
 
   if (!order)
     throw new CustomResponseError(404, {
-      message: 'Record does not exist',
+      message: "Record does not exist",
     });
 
   const session = await stripeRef.checkout.sessions.create({
-    mode: 'payment',
+    mode: "payment",
     shipping_address_collection: {
-      allowed_countries: ['US', 'IN', 'BN'],
+      allowed_countries: ["US", "IN", "BN"],
     },
 
     success_url: `${process.env.STRIPE_CALLBACK_BASE_URL}/me/orders/${orderId}/stripepayment_success_cb`,
@@ -399,7 +417,7 @@ export const getStripePaymentUrl = async (req: Request, res: Response) => {
       quantity: item.quantity,
       price_data: {
         currency: item.product.price.currency,
-        unit_amount: item.product.price.amount,
+        unit_amount: item.product.price.amount * 100,
         product_data: {
           name: item.product.title,
         },
@@ -412,11 +430,37 @@ export const getStripePaymentUrl = async (req: Request, res: Response) => {
     data: {
       stripeSessionId: session.id,
       paidJson: { session: JSON.parse(JSON.stringify(session)) },
-      paymentMode: 'ONLINE',
+      paymentMode: "ONLINE",
     },
   });
 
   res.json({
     url: session.url,
+  });
+};
+
+export const changeStatusOfOrder = async (req: Request, res: Response) => {
+  const status = req.params.status;
+
+  if (!["cancelledAt", "outOfDeliveryAt", "deliveredAt"].includes(status))
+    throw new CustomResponseError(404, {
+      message: "Invalid status",
+    });
+
+  const body: any = {};
+
+  if (status == "cancelledAt") {
+    body.cancelledAt = new Date();
+  } else if (status == "outOfDeliveryAt") {
+    body.outOfDelivery = new Date();
+  } else body.delivered = new Date();
+
+  res.json({
+    order: await prismaClient.order.update({
+      where: {
+        id: req.params.orderId,
+      },
+      data: body,
+    }),
   });
 };

@@ -28,12 +28,12 @@ productRouter
     requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
     validateRequest(ProductSchema, "body"),
-    updateProduct
+    updateProduct,
   )
   .delete(
     requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
-    deleteProduct
+    deleteProduct,
   )
   .get(getSingleProduct);
 
@@ -42,7 +42,7 @@ productRouter
   .put(
     requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
-    publishProduct(EProductStatus.PUBLISHED)
+    publishProduct(EProductStatus.PUBLISHED),
   );
 
 productRouter
@@ -50,7 +50,7 @@ productRouter
   .put(
     requireAdmin,
     validateRequest(ObjectIdParamSchema("productId"), "params"),
-    publishProduct(EProductStatus.DRAFT)
+    publishProduct(EProductStatus.DRAFT),
   );
 
 export { productRouter };

@@ -12,7 +12,7 @@ export function generateOTP(numDigits: number = 4): string {
 
   // Generate random bytes and convert to a number
   const randomBytes = crypto.randomBytes(
-    Math.ceil((numDigits * Math.log2(10)) / 8)
+    Math.ceil((numDigits * Math.log2(10)) / 8),
   );
   const otp =
     parseInt(randomBytes.toString("hex").slice(0, numDigits), 16) % max;
@@ -21,4 +21,16 @@ export function generateOTP(numDigits: number = 4): string {
   const otpString = otp.toString().padStart(numDigits, "0");
 
   return otpString;
+}
+export function humaniseDateObject(time: Date) {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+  return time.toLocaleString("en-US", options);
 }

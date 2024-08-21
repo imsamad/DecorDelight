@@ -1,7 +1,7 @@
-import { prismaClient, EProductStatus } from '@repo/db';
-import { Request, Response } from 'express';
-import { generateOTP } from '@repo/utils';
-import slugify from 'slugify';
+import { prismaClient, EProductStatus } from "@repo/db";
+import { Request, Response } from "express";
+import { generateOTP } from "@repo/utils";
+import slugify from "slugify";
 
 export const createProduct = async (req: Request, res: Response) => {
   res.json({
@@ -86,7 +86,7 @@ export const publishProduct =
     const where: any = {
       id: req.params.productId,
       status:
-        status == 'DRAFT' ? EProductStatus.PUBLISHED : EProductStatus.DRAFT,
+        status == "DRAFT" ? EProductStatus.PUBLISHED : EProductStatus.DRAFT,
     };
 
     res.json({

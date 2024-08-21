@@ -1,10 +1,10 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { categorizeFileType } from './categorizeFileType';
+import { v2 as cloudinary } from "cloudinary";
+import { categorizeFileType } from "./categorizeFileType";
 
 export const cloduinaryUploader = async (filePath: string) => {
   try {
     cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_FOLDER || 'dnkb5aetl',
+      cloud_name: process.env.CLOUDINARY_FOLDER || "dnkb5aetl",
       secure: true,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
@@ -14,16 +14,16 @@ export const cloduinaryUploader = async (filePath: string) => {
     const results = await cloudinary.uploader.upload(filePath, {
       use_filename: true,
       unique_filename: false,
-      folder: 'ecommerce',
+      folder: "ecommerce",
       resource_type,
     });
 
-    if (resource_type == 'image') {
+    if (resource_type == "image") {
       const efficientUrl = cloudinary.url(results.public_id, {
         transformation: [
           {
-            quality: 'auto',
-            fetch_format: 'auto',
+            quality: "auto",
+            fetch_format: "auto",
           },
           {
             width: 1000,
@@ -36,6 +36,6 @@ export const cloduinaryUploader = async (filePath: string) => {
 
     return results.secure_url;
   } catch (error) {
-    console.error('error while uploading to cloduinary: ', error);
+    console.error("error while uploading to cloduinary: ", error);
   }
 };

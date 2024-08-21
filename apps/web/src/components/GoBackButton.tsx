@@ -1,8 +1,8 @@
-'use client';
-import React from 'react';
-import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
-import { CircleArrowLeftIcon } from 'lucide-react';
+"use client";
+import React from "react";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+import { CircleArrowLeftIcon } from "lucide-react";
 
 const GoBackButton = () => {
   const router = useRouter();
@@ -11,9 +11,9 @@ const GoBackButton = () => {
       onClick={() => {
         router.back();
       }}
-      variant='secondary'
+      variant="secondary"
     >
-      <CircleArrowLeftIcon className='w-4 h-4 mr-4' />
+      <CircleArrowLeftIcon className="w-4 h-4 mr-4" />
       Go Back
     </Button>
   );

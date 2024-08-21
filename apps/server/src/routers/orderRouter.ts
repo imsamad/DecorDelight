@@ -1,77 +1,85 @@
-import { Router } from 'express';
-import { validateRequest } from '../middleware/validateRequest';
-import { ObjectIdParamSchema, OrderSchema } from '@repo/utils';
+import { Router } from "express";
+import { validateRequest } from "../middleware/validateRequest";
+import { ObjectIdParamSchema, OrderSchema } from "@repo/utils";
 import {
   addAddressToOrder,
   changeQuantityOfOrderItem,
+  changeStatusOfOrder,
   createOrder,
   getAllOrders,
   getSingleOrder,
   getStripePaymentUrl,
   removeOrderItem,
   setPaymentMode,
-} from '../controllers/orderCtrl';
-import { requireAuth } from '../middleware/authMiddleware';
+} from "../controllers/orderCtrl";
+import { requireAdmin, requireAuth } from "../middleware/authMiddleware";
 
 const orderRouter: Router = Router();
 
 // all my orders as well as single by id by passing orderId in query
-orderRouter.get(['/', '/myorders'], requireAuth, getAllOrders);
+orderRouter.get(["/", "/myorders"], requireAuth, getAllOrders);
+
+orderRouter.put(
+  "/change_status/:orderId/:status",
+  requireAdmin,
+  validateRequest(ObjectIdParamSchema("orderId"), "params"),
+  changeStatusOfOrder,
+);
 
 orderRouter.get(
-  '/:orderId',
-  validateRequest(ObjectIdParamSchema('orderId'), 'params'),
+  "/:orderId",
+  validateRequest(ObjectIdParamSchema("orderId"), "params"),
   requireAuth,
-  getSingleOrder
+  getSingleOrder,
 );
 
 // create order
 orderRouter.post(
-  '/',
+  "/",
   requireAuth,
-  validateRequest(OrderSchema, 'body'),
-  createOrder
+  validateRequest(OrderSchema, "body"),
+  createOrder,
 );
 
 orderRouter.put(
-  '/getStripePaymentUrl/:orderId',
+  "/getStripePaymentUrl/:orderId",
   (a, b, c) => {
-    console.log('objectobjectobjectobjectobjectobject');
+    console.log("objectobjectobjectobjectobjectobject");
     c();
   },
   requireAuth,
-  validateRequest(ObjectIdParamSchema('orderId'), 'params'),
-  getStripePaymentUrl
+  validateRequest(ObjectIdParamSchema("orderId"), "params"),
+  getStripePaymentUrl,
 );
 
 orderRouter.put(
-  '/addAddress/:orderId/:addressId',
+  "/addAddress/:orderId/:addressId",
   requireAuth,
-  validateRequest(ObjectIdParamSchema('orderId'), 'params'),
-  validateRequest(ObjectIdParamSchema('addressId'), 'params'),
-  addAddressToOrder
+  validateRequest(ObjectIdParamSchema("orderId"), "params"),
+  validateRequest(ObjectIdParamSchema("addressId"), "params"),
+  addAddressToOrder,
 );
 
 orderRouter.put(
-  '/setPaymentMode/:orderId',
+  "/setPaymentMode/:orderId",
   requireAuth,
-  validateRequest(ObjectIdParamSchema('orderId'), 'params'),
-  setPaymentMode
+  validateRequest(ObjectIdParamSchema("orderId"), "params"),
+  setPaymentMode,
 );
 
 // pass quantity in query like /:orderId?quantity=10
 orderRouter.put(
-  '/:orderItemId',
+  "/:orderItemId",
   requireAuth,
-  validateRequest(ObjectIdParamSchema('orderItemId'), 'params'),
-  changeQuantityOfOrderItem
+  validateRequest(ObjectIdParamSchema("orderItemId"), "params"),
+  changeQuantityOfOrderItem,
 );
 
 orderRouter.delete(
-  '/:orderItemId',
+  "/:orderItemId",
   requireAuth,
-  validateRequest(ObjectIdParamSchema('orderItemId'), 'params'),
-  removeOrderItem
+  validateRequest(ObjectIdParamSchema("orderItemId"), "params"),
+  removeOrderItem,
 );
 
 export { orderRouter };

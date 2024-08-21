@@ -1,5 +1,5 @@
-'use client';
-import React, { useEffect, useRef, useState } from 'react';
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   LoginSchema,
@@ -8,122 +8,122 @@ import {
   TLoginSchema,
   TOtpSchema,
   TSignupSchema,
-} from '@repo/utils';
+} from "@repo/utils";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form } from '@/components/ui/form';
-import { FormFieldWrapper } from './FormFieldWrapper';
-import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
+import { FormFieldWrapper } from "./FormFieldWrapper";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   useParams,
   usePathname,
   useRouter,
   useSearchParams,
-} from 'next/navigation';
+} from "next/navigation";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from './ui/input-otp';
-import { fetcher } from '@/lib/fetcher';
-import { signIn } from 'next-auth/react';
-import { useToast } from './ui/use-toast';
-import { flushSync } from 'react-dom';
+} from "./ui/input-otp";
+import { fetcher } from "@/lib/fetcher";
+import { signIn } from "next-auth/react";
+import { useToast } from "./ui/use-toast";
+import { flushSync } from "react-dom";
 
 export const AuthForm = () => {
   const { toast } = useToast();
   const pathname = usePathname();
   const params = useSearchParams();
-  const redirectTo = params.get('redirectTo') || '/me';
+  const redirectTo = params.get("redirectTo") || "/me";
   const router = useRouter();
 
-  const [step, setStep] = useState<'signup' | 'login' | 'otp'>(
-    pathname.includes('signup')
-      ? 'signup'
-      : pathname.includes('login')
-        ? 'login'
-        : 'otp'
+  const [step, setStep] = useState<"signup" | "login" | "otp">(
+    pathname.includes("signup")
+      ? "signup"
+      : pathname.includes("login")
+        ? "login"
+        : "otp",
   );
 
   const loginForm = useForm<TLoginSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: 'hello@gmail.com',
-      password: 'Password@123',
+      email: "hello@gmail.com",
+      password: "Password@123",
     },
   });
 
   const signupForm = useForm<TSignupSchema>({
     resolver: zodResolver(SignUpSchema),
     values: {
-      email: 'hello@gmail.com',
-      password: 'Password@123',
-      fullName: 'Abdus Samad',
+      email: "hello@gmail.com",
+      password: "Password@123",
+      fullName: "Abdus Samad",
     },
   });
 
   const otpForm = useForm<TOtpSchema>({
     resolver: zodResolver(OTPSchema),
     values: {
-      otp: '',
+      otp: "",
     },
   });
 
   const handleLoginSubmit = async (userData: TLoginSchema) => {
     try {
-      await fetcher('/auth/login', 'POST', userData);
+      await fetcher("/auth/login", "POST", userData);
 
-      const res = await signIn('credentials', {
+      const res = await signIn("credentials", {
         email: userData.email,
         password: userData.password,
         redirect: false,
       });
 
       if (!res?.ok) {
-        await fetcher('/auth/logout', 'DELETE');
+        await fetcher("/auth/logout", "DELETE");
         // show alert to user
       }
       router.push(redirectTo);
       router.refresh();
     } catch (error: any) {
-      fetcher('/auth/logout', 'DELETE').finally(() => {});
+      fetcher("/auth/logout", "DELETE").finally(() => {});
       if (error?.message?.email)
-        loginForm.setError('email', { message: error.message.email });
+        loginForm.setError("email", { message: error.message.email });
       if (error?.message?.password)
-        loginForm.setError('password', { message: error.message.password });
+        loginForm.setError("password", { message: error.message.password });
     }
   };
 
   const handleSignupSubmit = async (userData: TLoginSchema) => {
     try {
-      const data = await fetcher('/auth/signup', 'POST', userData);
+      const data = await fetcher("/auth/signup", "POST", userData);
 
       startTimer();
 
-      window.localStorage.setItem('newlyRegisteredUser', data.userId);
+      window.localStorage.setItem("newlyRegisteredUser", data.userId);
 
-      setStep('otp');
+      setStep("otp");
 
       // in dev env only OTP will be sent back in json, to speed up process.
-      if (data.otp) otpForm.setValue('otp', data.otp);
+      if (data.otp) otpForm.setValue("otp", data.otp);
     } catch (error: any) {
       if (error.message.email)
-        signupForm.setError('email', { message: 'Email is taken!' });
+        signupForm.setError("email", { message: "Email is taken!" });
       else {
         toast({
-          title: 'Retry again',
-          variant: 'destructive',
+          title: "Retry again",
+          variant: "destructive",
         });
       }
     }
@@ -134,7 +134,7 @@ export const AuthForm = () => {
   const startTimer = () => {
     const min = parseInt(
       process.env.NEXT_PUBLIC_OTP_RETRY_IN_MIN! as string,
-      10
+      10,
     );
 
     flushSync(() => {
@@ -162,22 +162,22 @@ export const AuthForm = () => {
 
   const hadleOtpSubmit = async ({ otp }: TOtpSchema) => {
     try {
-      await fetcher(`/auth/confirmOTP/${otp}`, 'POST');
-      window.localStorage.removeItem('newlyRegisteredUser');
+      await fetcher(`/auth/confirmOTP/${otp}`, "POST");
+      window.localStorage.removeItem("newlyRegisteredUser");
       await handleLoginSubmit({
         email: signupForm.getValues().email,
         password: signupForm.getValues().password,
       });
     } catch (error) {
-      otpForm.setError('otp', { message: 'Invalid OTP' });
+      otpForm.setError("otp", { message: "Invalid OTP" });
     }
   };
   const [isResending, setIsResending] = useState(false);
   const handleResentOTP = async () => {
     try {
       setIsResending(true);
-      const userId = window.localStorage.getItem('newlyRegisteredUser');
-      await fetcher(`/auth/resendOTP/${userId}`, 'POST');
+      const userId = window.localStorage.getItem("newlyRegisteredUser");
+      await fetcher(`/auth/resendOTP/${userId}`, "POST");
       startTimer();
     } catch (error) {
     } finally {
@@ -185,31 +185,31 @@ export const AuthForm = () => {
     }
   };
   return (
-    <Card className='mx-auto max-w-sm'>
+    <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className='text-xl'>
-          {step == 'signup'
-            ? 'Sign Up'
-            : step != 'otp'
-              ? 'Log In'
-              : 'Enter OTP'}
+        <CardTitle className="text-xl">
+          {step == "signup"
+            ? "Sign Up"
+            : step != "otp"
+              ? "Log In"
+              : "Enter OTP"}
         </CardTitle>
         <CardDescription>
-          {step == 'signup'
-            ? 'Enter your information to create an account'
-            : step != 'otp'
-              ? 'Enter your email below to login to your account'
-              : 'Enter OTP sent at your address'}
+          {step == "signup"
+            ? "Enter your information to create an account"
+            : step != "otp"
+              ? "Enter your email below to login to your account"
+              : "Enter OTP sent at your address"}
         </CardDescription>
       </CardHeader>
 
       <CardContent key={step}>
-        {step != 'otp' ? (
+        {step != "otp" ? (
           <AuthFormWrapper
             step={step}
-            form={step == 'signup' ? signupForm : loginForm}
+            form={step == "signup" ? signupForm : loginForm}
             handleSubmit={
-              step == 'signup'
+              step == "signup"
                 ? signupForm.handleSubmit(handleSignupSubmit)
                 : loginForm.handleSubmit(handleLoginSubmit)
             }
@@ -218,12 +218,12 @@ export const AuthForm = () => {
           <Form {...otpForm}>
             <form
               onSubmit={otpForm.handleSubmit(hadleOtpSubmit)}
-              className='flex flex-col gap-4'
+              className="flex flex-col gap-4"
             >
               <InputOTP
                 maxLength={6}
                 onChange={(e) => {
-                  otpForm.setValue('otp', e);
+                  otpForm.setValue("otp", e);
                 }}
                 value={otpForm.getValues().otp}
               >
@@ -239,27 +239,27 @@ export const AuthForm = () => {
                   <InputOTPSlot index={5} />
                 </InputOTPGroup>
               </InputOTP>
-              <p className='inputErrorMsg'>
-                {otpForm.formState.errors.otp?.message ?? ''}
+              <p className="inputErrorMsg">
+                {otpForm.formState.errors.otp?.message ?? ""}
               </p>
               <Button
                 disabled={isResending || otpForm.formState.isSubmitting}
-                type='submit'
-                className='w-full'
-                size='sm'
+                type="submit"
+                className="w-full"
+                size="sm"
               >
                 Submit
               </Button>
               <Button
-                type='submit'
-                className='w-full'
-                size='sm'
+                type="submit"
+                className="w-full"
+                size="sm"
                 onClick={() => handleResentOTP()}
                 disabled={
                   count > 0 || otpForm.formState.isSubmitting || isResending
                 }
               >
-                {`Resend ${count ? `(${count})` : ''}`}
+                {`Resend ${count ? `(${count})` : ""}`}
               </Button>
             </form>
           </Form>
@@ -273,49 +273,49 @@ const AuthFormWrapper = ({ form, handleSubmit, step }: any) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
-        <div className='flex flex-col gap-4'>
-          {step == 'signup' ? (
-            <div className='flex flex-col gap-2'>
+        <div className="flex flex-col gap-4">
+          {step == "signup" ? (
+            <div className="flex flex-col gap-2">
               <FormFieldWrapper.TextField
                 control={form.control}
-                name='fullName'
-                label='Full Name'
+                name="fullName"
+                label="Full Name"
               />
             </div>
           ) : null}
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <FormFieldWrapper.TextField
               control={form.control}
-              name='email'
-              label='Email'
+              name="email"
+              label="Email"
             />
           </div>
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <FormFieldWrapper.TextField
               control={form.control}
-              name='password'
-              label='Password'
+              name="password"
+              label="Password"
             />
           </div>
           <Button
-            type='submit'
-            className='w-full'
+            type="submit"
+            className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {step == 'signup' ? 'Create an account' : 'Login'}
+            {step == "signup" ? "Create an account" : "Login"}
           </Button>
         </div>
-        {step == 'signup' ? (
-          <div className='mt-4 text-center text-sm'>
-            Already have an account?{' '}
-            <Link href='/login' className='underline'>
+        {step == "signup" ? (
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link href="/login" className="underline">
               Sign in
             </Link>
           </div>
         ) : (
-          <div className='mt-4 text-center text-sm'>
+          <div className="mt-4 text-center text-sm">
             Don't have an account?
-            <Link href='/signup' className='underline'>
+            <Link href="/signup" className="underline">
               Sign up
             </Link>
           </div>

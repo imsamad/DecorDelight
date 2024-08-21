@@ -1,5 +1,5 @@
-import { prismaClient } from '@repo/db';
-import { Request, Response } from 'express';
+import { prismaClient } from "@repo/db";
+import { Request, Response } from "express";
 
 export const addCartItem = async (req: Request, res: Response) => {
   const cartExist = await prismaClient.cartItem.findFirst({
@@ -64,7 +64,7 @@ export const updateCartItem = async (req: Request, res: Response) => {
     await prismaClient.cartItem.delete({
       where: { id: req.params.cartItemId },
     });
-    res.json({ message: 'Deleted!' });
+    res.json({ message: "Deleted!" });
   } else {
     res.json({
       cartItems: await prismaClient.cartItem.update({

@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -7,12 +7,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Order, OrderItem } from '@repo/db';
-import Link from 'next/link';
+} from "@/components/ui/table";
+import { EPaymentMode, Order, OrderItem } from "@repo/db";
+import Link from "next/link";
 
-import React from 'react';
-import PayOnlineButton from './PayOnlineButton';
+import React from "react";
+import PayOnlineButton from "./PayOnlineButton";
+import { ArrowBigRightDashIcon } from "lucide-react";
+import { OrderStatusesColums } from "./OrderStatusesColums";
+
 interface X extends Order {
   items: OrderItem[];
 }
@@ -20,23 +23,22 @@ interface X extends Order {
 const OrdersList = async ({
   orders,
   isAdmin,
+  userId,
 }: {
+  // required in case user is admin
+  userId?: string;
   orders: X[];
-  isAdmin?: boolean;
+  isAdmin: boolean;
 }) => {
   return (
-    <Card className='overflow-x-auto mx-auto'>
+    <Card className="overflow-x-auto mx-auto">
       <CardHeader>
-        {/* <div className=''> */}
-        {/* <h3 className='text-center text-lg font-semibold text-gray-900 truncate'> */}
         <CardTitle>Your Orders</CardTitle>
-        {/* </h3> */}
-        {/* </div> */}
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className='bg-gray-100 text-gray-700'>
+            <TableRow className="bg-gray-100 text-gray-700">
               <TableHead>ID</TableHead>
               <TableHead>Total Items</TableHead>
               <TableHead>Shipping Price</TableHead>
@@ -50,44 +52,45 @@ const OrdersList = async ({
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id} className='hover:bg-gray-50'>
-                <TableCell className='underline text-blue-600'>
+              <TableRow key={order.id} className="hover:bg-gray-50">
+                <TableCell className="underline text-blue-600">
                   <Link href={`/me/orders/${order.id}`}>{order.id}</Link>
                 </TableCell>
 
-                <TableCell className='font-medium'>
+                <TableCell className="font-medium">
                   {order.items.length}
                 </TableCell>
-                <TableCell className='font-medium'>
+                <TableCell className="font-medium">
                   {order.shippingPrice}
                 </TableCell>
 
-                <TableCell className='font-medium'>{order.taxPrice}</TableCell>
-                <TableCell className='font-medium'>
+                <TableCell className="font-medium">{order.taxPrice}</TableCell>
+                <TableCell className="font-medium">
                   {order.totalAmount}
                 </TableCell>
-                <TableCell className='font-medium'>
-                  {order.paidAt ? (
-                    'Yes'
+                <TableCell className="font-medium">
+                  {!order.paymentMode ? (
+                    <div className="flex items-center justify-center">
+                      <Link href={`/me/orders/${order.id}`}>
+                        <Button>
+                          Complete it <ArrowBigRightDashIcon />
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : order.paymentMode == EPaymentMode.COD ? (
+                    "COD"
+                  ) : order.paidAt ? (
+                    "Paid"
+                  ) : isAdmin && order.userId == userId ? (
+                    "Not Paid"
                   ) : (
-                    <PayOnlineButton orderId={order.id} />
+                    <PayOnlineButton label="Pay Now" orderId={order.id} />
                   )}
                 </TableCell>
-                <TableCell className='font-medium'>
+                <TableCell className="font-medium">
                   {new Date(order.createdAt).toDateString()}
                 </TableCell>
-                <TableCell>
-                  {order.outOfDelivery
-                    ? 'Out for delivery'
-                    : order.delivered
-                      ? 'Delivered'
-                      : 'Under Process'}
-                </TableCell>
-                {isAdmin ? (
-                  <TableCell>
-                    <Button>Change Status</Button>
-                  </TableCell>
-                ) : null}
+                <OrderStatusesColums order={order} isAdmin={isAdmin} />
               </TableRow>
             ))}
           </TableBody>
