@@ -7,13 +7,14 @@ settings:
 importers:
 
   .:
+    dependencies:
+      turbo:
+        specifier: ^2.0.13
+        version: 2.0.14
     devDependencies:
       prettier:
         specifier: ^3.2.5
         version: 3.3.3
-      turbo:
-        specifier: ^2.0.13
-        version: 2.0.14
 
   apps/server:
     dependencies:
@@ -8952,7 +8953,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo-darwin-arm64@2.0.14:
@@ -8960,7 +8961,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo-linux-64@2.0.14:
@@ -8968,7 +8969,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo-linux-arm64@2.0.14:
@@ -8976,7 +8977,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo-windows-64@2.0.14:
@@ -8984,7 +8985,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo-windows-arm64@2.0.14:
@@ -8992,7 +8993,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /turbo@2.0.14:
@@ -9005,7 +9006,7 @@ packages:
       turbo-linux-arm64: 2.0.14
       turbo-windows-64: 2.0.14
       turbo-windows-arm64: 2.0.14
-    dev: true
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
