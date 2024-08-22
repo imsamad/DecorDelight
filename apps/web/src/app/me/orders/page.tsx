@@ -1,20 +1,20 @@
-import { requireAuth } from "@/lib/requireAuth";
-import { prismaClient } from "@repo/db";
-import OrdersList from "./OrdersList";
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { PageWrapper } from "@/components/PageWrapper";
+import { requireAuth } from '@/lib/requireAuth';
+import { prismaClient } from '@repo/db';
+import OrdersList from './OrdersList';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { PageWrapper } from '@/components/PageWrapper';
 
 const MyOrdersPage = async ({
   wrapInPage = true,
 }: {
   wrapInPage?: boolean;
 }) => {
-  const session = await requireAuth("/me/orders");
+  const session = await requireAuth('/me/orders');
   const where: any = {};
 
-  if (session.user.role == "USER") where.userId = session.user.id;
+  if (session.user.role == 'USER') where.userId = session.user.id;
   const orders = await prismaClient.order.findMany({
     where,
     include: {
@@ -24,29 +24,29 @@ const MyOrdersPage = async ({
 
   if (orders.length == 0)
     return (
-      <div className="flex flex-col items-center justify-center py-10 mt-24">
+      <div className='flex flex-col items-center justify-center py-10 mt-24'>
         <Image
-          src="/emptyCartImage.jpeg" // Replace with your own image
-          alt="Empty Cart"
+          src='/emptyCartImage.jpeg' // Replace with your own image
+          alt='Empty Cart'
           width={200}
           height={200}
-          className="mb-4 rounded-lg"
+          className='mb-4 rounded-lg'
         />
-        <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+        <h2 className='text-2xl font-semibold mb-2 text-gray-800'>
           Your orders are empty.
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className='text-gray-600 mb-6'>
           Looks like you haven't added anything to your order yet.
         </p>
-        <Link href="/">
-          <Button variant="default" size="lg">
+        <Link href='/'>
+          <Button variant='default' size='lg'>
             Continue Shopping
           </Button>
         </Link>
       </div>
     );
 
-  const isAdmin = session.user.role == "ADMIN";
+  const isAdmin = session.user.role == 'ADMIN';
 
   if (!wrapInPage)
     return (

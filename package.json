@@ -30,6 +30,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "tsup": "^8.0.2",
     "turbo": "^2.0.13",
     "typescript": "^5.3.3"
   }
