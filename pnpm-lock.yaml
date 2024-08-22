@@ -349,15 +349,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../config-typescript
-      '@types/jest':
-        specifier: ^29.5.12
-        version: 29.5.12
       '@types/node':
         specifier: ^20.11.24
         version: 20.16.1
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.16.1)
       tsup:
         specifier: ^8.0.2
         version: 8.2.4(typescript@5.5.4)
