@@ -333,6 +333,15 @@ importers:
 
   packages/utils:
     dependencies:
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.16.1
+      tsup:
+        specifier: ^8.0.2
+        version: 8.2.4(typescript@5.5.4)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.5.4
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -349,15 +358,6 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../config-typescript
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.16.1
-      tsup:
-        specifier: ^8.0.2
-        version: 8.2.4(typescript@5.5.4)
-      typescript:
-        specifier: ^5.3.3
-        version: 5.5.4
 
 packages:
 
