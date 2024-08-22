@@ -8,7 +8,7 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",

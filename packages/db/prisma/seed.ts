@@ -1,14 +1,14 @@
-const { PrismaClient } = require("@prisma/client");
-const { faker } = require("@faker-js/faker");
-const bcryptjs = require("bcryptjs");
-const { titleImages } = require("./seedImages");
+const { PrismaClient } = require('@prisma/client');
+const { faker } = require('@faker-js/faker');
+const bcryptjs = require('bcryptjs');
+const { titleImages } = require('./seedImages');
 
 // @ts-ignore
 const prisma = new PrismaClient();
 
 async function main() {
   const salt = await bcryptjs.genSalt(parseInt(process.env.SALT_SIZE!) || 10);
-  const password = bcryptjs.hashSync("Password@123", salt);
+  const password = bcryptjs.hashSync('Password@123', salt);
   // Seed Users
   let alreadyUserCounts = (await prisma.user.findMany({})).length;
   const users = await Promise.all(
@@ -30,16 +30,72 @@ async function main() {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-      }),
-    ),
+      })
+    )
   );
+
+  prisma.user.createMany({
+    data: [
+      {
+        email: `user@gmail.com`,
+        password,
+
+        phoneNumber: faker.datatype.number({
+          min: 1000000000,
+          max: 9999999999,
+        }),
+        username: faker.internet.userName(),
+        fullName: faker.name.fullName(),
+        image: faker.image.avatar(),
+        emailVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        phoneNumberVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        email: `admin@gmail.com`,
+
+        password,
+
+        phoneNumber: faker.datatype.number({
+          min: 1000000000,
+          max: 9999999999,
+        }),
+        username: faker.internet.userName(),
+        fullName: faker.name.fullName(),
+        image: faker.image.avatar(),
+        emailVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        phoneNumberVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        role: 'ADMIN',
+      },
+
+      {
+        email: `hello@gmail.com`,
+        password,
+        phoneNumber: faker.datatype.number({
+          min: 1000000000,
+          max: 9999999999,
+        }),
+
+        username: faker.internet.userName(),
+        fullName: faker.name.fullName(),
+        image: faker.image.avatar(),
+        emailVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        phoneNumberVerifiedAt: faker.datatype.boolean() ? new Date() : null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ],
+  });
   const productsSeed = () => ({
     data: {
       title: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
       price: {
         amount: parseFloat(faker.commerce.price()),
-        currency: faker.helpers.arrayElement(["INR"]),
+        currency: faker.helpers.arrayElement(['INR']),
       },
       dimension: {
         weight: faker.datatype.float({ min: 0.1, max: 10.0 }),
@@ -50,25 +106,25 @@ async function main() {
       medias: faker.helpers
         .arrayElements(
           titleImages,
-          faker.datatype.number({ min: 1, max: titleImages.length / 4 }),
+          faker.datatype.number({ min: 1, max: titleImages.length / 4 })
         )
         .map((url: string, index: number) => ({
           url,
           isDefault: false,
           orderNo: index,
-          type: "IMAGE",
+          type: 'IMAGE',
         })),
 
       slug: faker.lorem.slug(),
       quantityInStock: faker.datatype.number({ min: 1, max: 100 }),
       userId: faker.helpers.arrayElement(users).id,
-      status: faker.helpers.arrayElement(["PUBLISHED"]),
+      status: faker.helpers.arrayElement(['PUBLISHED']),
     },
   });
 
   // Seed Products
   const products = await Promise.all(
-    Array.from({ length: 15 }).map(() => prisma.product.create(productsSeed())),
+    Array.from({ length: 15 }).map(() => prisma.product.create(productsSeed()))
   );
 
   // Seed CartItems
@@ -138,7 +194,7 @@ async function main() {
   // await prisma.order.create({
   //   data: ords[0],
   // });
-  console.log("Seeding complete!");
+  console.log('Seeding complete!');
 }
 
 main()
