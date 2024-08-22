@@ -295,6 +295,12 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.18.0(prisma@5.18.0)
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.16.1
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       prisma:
         specifier: ^5.18.0
         version: 5.18.0
@@ -304,6 +310,9 @@ importers:
       tsup:
         specifier: ^8.0.2
         version: 8.2.4(typescript@5.5.4)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.5.4
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -311,15 +320,6 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../config-typescript
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.16.1
-      bcryptjs:
-        specifier: ^2.4.3
-        version: 2.4.3
-      typescript:
-        specifier: ^5.3.3
-        version: 5.5.4
 
   packages/jest-presets:
     dependencies:
