@@ -16,7 +16,7 @@
     "clean-x": "rm -rf node_modules .turbo && cd apps/web && rm -rf node_modules .turbo .next && cd ../server && rm -rf node_modules .turbo dist && cd ../../packages/db &&  rm -rf node_modules .turbo dist && cd ../utils &&  rm -rf node_modules .turbo dist",
     "studio": "pnpm turbo run studio",
     "set:db:env": "echo $DATABASE_URL && echo DATABASE_URL=$DATABASE_URL > packages/db/.env",
-    "deploy:render:build": "pnpm install && pnpm db:generate && pnpx turbo run build -F=@repo/db && pnpx turbo run build -F=@repo/utils && pnpx turbo run -F=server",
+    "deploy:render:build": "pnpm install && pnpm db:generate && pnpx turbo run build -F=@repo/db && pnpx turbo run build -F=@repo/utils && pnpx turbo run build -F=server",
     "deploy:render:start": "pnpm turbo run start -F=server"
   },
   "devDependencies": {
