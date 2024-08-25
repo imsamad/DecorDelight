@@ -1,12 +1,12 @@
 {
   "name": "server",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
     "dev1": "ts-node-dev src/index.ts",
-    "build": "pnpm tsup",
+    "build": "tsup",
     "clean": "rm -rf dist .turbo",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
@@ -16,8 +16,8 @@
     "preset": "@repo/jest-presets/node"
   },
   "dependencies": {
-    "@repo/db": "workspace:*",
-    "@repo/utils": "workspace:*",
+    "@repo/db": "*",
+    "@repo/utils": "*",
     "cloudinary": "^2.4.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -35,9 +35,9 @@
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/jest-presets": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "*",
+    "@repo/jest-presets": "*",
+    "@repo/typescript-config": "*",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

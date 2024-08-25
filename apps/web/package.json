@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -24,8 +24,8 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
-    "@repo/db": "workspace:*",
-    "@repo/utils": "workspace:*",
+    "@repo/db": "*",
+    "@repo/utils": "*",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -45,8 +45,8 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.1",
     "@prisma/nextjs-monorepo-workaround-plugin": "^5.18.0",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@tailwindcss/typography": "^0.5.14",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.11.24",

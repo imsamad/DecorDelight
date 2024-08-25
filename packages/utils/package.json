@@ -1,6 +1,6 @@
 {
   "name": "@repo/utils",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,22 +8,22 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "pnpm tsup",
+    "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo"
   },
   "devDependencies": {
-    "@repo/db": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/jest-presets": "workspace:*",
+    "@repo/db": "*",
+    "@repo/eslint-config": "*",
+    "@repo/jest-presets": "*",
     "@types/node": "^20.11.24",
-    "@repo/typescript-config": "workspace:*"
-  },
-  "dependencies": {
     "tsup": "^8.0.2",
     "typescript": "^5.3.3",
+    "@repo/typescript-config": "*"
+  },
+  "dependencies": {
     "zod": "^3.23.8"
   }
 }

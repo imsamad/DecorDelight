@@ -1,6 +1,6 @@
 {
   "name": "@repo/db",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,28 +8,29 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "pnpm tsup",
+    "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "db:generate": "pnpm prisma generate",
-    "db:push": "pnpm prisma db push",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
     "db:seed": "ts-node prisma/seed.ts",
     "studio": "prisma studio --browser none"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.18.0",
-    "tsup": "^8.0.2",
-    "prisma": "^5.18.0",
-    "ts-node": "^10.9.2",
-    "@types/node": "^20.11.24",
-    "bcryptjs": "^2.4.3",
-    "typescript": "^5.3.3"
+    "bcryptjs": "^2.4.3"
   },
+  "packageManager": "npm@10.7.0",
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "prisma": "^5.18.0",
+    "@faker-js/faker": "^8.4.1",
+    "@repo/eslint-config": "*",
+    "typescript": "^5.3.3",
+    "@repo/typescript-config": "*",
+    "tsup": "^8.0.2",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.11.24"
   }
 }
