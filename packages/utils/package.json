@@ -18,10 +18,10 @@
     "@repo/db": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/jest-presets": "workspace:*",
+    "@types/node": "^20.11.24",
     "@repo/typescript-config": "workspace:*"
   },
   "dependencies": {
-    "@types/node": "^20.11.24",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3",
     "zod": "^3.23.8"
