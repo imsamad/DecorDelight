@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { requireAdmin } from "../middleware/authMiddleware";
-import { validateRequest } from "../middleware/validateRequest";
-import { ObjectIdParamSchema, ProductSchema } from "@repo/utils";
+import { Router } from 'express';
+import { requireAdmin } from '../middleware/authMiddleware';
+import { validateRequest } from '../middleware/validateRequest';
+import { ObjectIdParamSchema, ProductSchema } from '@repo/utils';
 import {
   createProduct,
   updateProduct,
@@ -10,47 +10,47 @@ import {
   getSingleProduct,
   getProducts,
   publishProduct,
-} from "../controllers/productCtrl";
-import { EProductStatus } from "@repo/db";
+} from '../controllers/productCtrl';
+import { EProductStatus } from '@repo/db';
 
 const productRouter: Router = Router();
 
-productRouter.get("/my", requireAdmin, getMyProducts);
+productRouter.get('/my', requireAdmin, getMyProducts);
 
 productRouter
-  .route("/")
-  .post(requireAdmin, validateRequest(ProductSchema, "body"), createProduct)
+  .route('/')
+  .post(requireAdmin, validateRequest(ProductSchema, 'body'), createProduct)
   .get(getProducts);
 
 productRouter
-  .route("/:productId")
+  .route('/:productId')
   .put(
     requireAdmin,
-    validateRequest(ObjectIdParamSchema("productId"), "params"),
-    validateRequest(ProductSchema, "body"),
-    updateProduct,
+    validateRequest(ObjectIdParamSchema('productId'), 'params'),
+    validateRequest(ProductSchema, 'body'),
+    updateProduct
   )
   .delete(
     requireAdmin,
-    validateRequest(ObjectIdParamSchema("productId"), "params"),
-    deleteProduct,
+    validateRequest(ObjectIdParamSchema('productId'), 'params'),
+    deleteProduct
   )
   .get(getSingleProduct);
 
 productRouter
-  .route("/publised/:productId")
+  .route('/publised/:productId')
   .put(
     requireAdmin,
-    validateRequest(ObjectIdParamSchema("productId"), "params"),
-    publishProduct(EProductStatus.PUBLISHED),
+    validateRequest(ObjectIdParamSchema('productId'), 'params'),
+    publishProduct(EProductStatus.PUBLISHED)
   );
 
 productRouter
-  .route("/unpublised/:productId")
+  .route('/unpublised/:productId')
   .put(
     requireAdmin,
-    validateRequest(ObjectIdParamSchema("productId"), "params"),
-    publishProduct(EProductStatus.DRAFT),
+    validateRequest(ObjectIdParamSchema('productId'), 'params'),
+    publishProduct(EProductStatus.DRAFT)
   );
 
 export { productRouter };
