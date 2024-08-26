@@ -4,6 +4,8 @@ const envFilePath =
     ? `/etc/secrets/.env`
     : `${process.cwd()}/.env`;
 
+logFileContent(envFilePath);
+
 require('dotenv').config({
   path: envFilePath,
 });
@@ -11,6 +13,7 @@ require('dotenv').config({
 import 'express-async-errors';
 import { server } from './server';
 import { EUserRole } from '@repo/db';
+import { logFileContent } from './lib/logFileContent';
 
 if (process.env.NODE_ENV == 'development' && !fs.existsSync(envFilePath))
   process.exit(1);
