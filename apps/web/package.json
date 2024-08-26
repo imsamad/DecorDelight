@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "start": "next start",
-    "deploy:vercel": "cd ../../ && npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && cd apps/web && npm i && cd ../../ && npx turbo run build -F=web"
+    "deploy:vercel": "cd ../../ && npm install --force && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && cd apps/web && npm install --force && cd ../../ && npx turbo run build -F=web"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -41,10 +41,10 @@
     "stripe": "^16.8.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "autoprefixer": "^10.4.20",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "@next/eslint-plugin-next": "^14.1.1",
     "@prisma/nextjs-monorepo-workaround-plugin": "^5.18.0",
     "@repo/eslint-config": "*",
