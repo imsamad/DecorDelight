@@ -1,7 +1,3 @@
-console.log(
-  'objectobjectobjectobjectobjectobjectobjectobjectobjectobjectobjectobjectobjectobjectobjectobject ',
-  process.env
-);
 import fs from 'fs';
 const envFilePath = `${process.cwd()}/.env`;
 require('dotenv').config({

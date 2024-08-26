@@ -28,7 +28,10 @@ app
   .use(cookieParser())
   .use(
     cors({
-      origin: process.env.CORS_ORIGIN,
+      origin:
+        process.env.NODE_ENV == 'development'
+          ? 'http://localhost:3000'
+          : 'https://decor-delight.vercel.app',
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
     })
