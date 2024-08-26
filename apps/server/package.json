@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
     "dev1": "ts-node-dev src/index.ts",
     "build": "npm i && npx tsup",
