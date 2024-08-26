@@ -1,66 +1,87 @@
-# E-commerce project for selling decorative items. (On-going freelance project, in beta version)
+# E-commerce Project for Selling Decorative Items (Ongoing Freelance Project, Beta Version)
 
-## Tech Stack and Features
+## Tech Stack
 
-- The backend is powered by Express and MongoDB, with Prisma as the ORM.
-- It features OTP-based email signup, JWT authentication, and cookie management for secure user sessions.
-- The frontend is built using Next.js, React Hook Form, Shadcn, and Tailwind CSS, providing a seamless and responsive user experience.
-- Stripe is integrated for payment processing.
-- Key features include a landing page, product listing, shopping cart, order placement, and a user dashboard, with admin capabilities to manage order statuses.
+- **Backend**: Express and MongoDB, with Prisma as the ORM.
+- **Frontend**: NextJS, NextAuth, React Hook Form, Shadcn, and Tailwind CSS.
+- **Assets Management**: Cloudinary.
+- **Monorepo**: Turborepo.
+- **Payment Integration**: Stripe.
 
-#### Setup
+## Features
 
-1.) Clone and install deps
+- OTP-based email signup.
+- JWT authentication and cookie management for secure user sessions.
+- Stripe payment processing integration.
+- Key features include:
+  - Landing page
+  - Product listing
+  - Shopping cart
+  - Order placement
+  - User dashboard
+  - Admin capabilities to manage order statuses
 
-```sh
-git clone https://github.com/imsamad/DecorDelight && cd DecorDelight && npm install
-```
+## Setup
 
-2.) Spin up mongo instance - it requires docker install on machine, so can skip if you have cloud instance
-
-```sh
-docker compose up -d
-```
-
-3.) Copy .env.example to .env in required apps and packages
-
-```sh
-npm run copy:env
-```
-
-4.) Generate Prisma Client
+To quickly set up the project, use the following single command:
+It encompases all below steps just copy and throw it in terminal, and you will be good to go
 
 ```sh
-npm run db:generate
+git clone git@github.com:imsamad/DecorDelight && cd DecorDelight && npm install && docker compose up -d && npm run copy:env && npm run db:generate && npx turbo run build -F=@repo/* && npm run db:seed && npm run dev
 ```
 
-5.) Generate build of all the packages beforehand - it is required as we are employing JIT comilation stargey of turborepo
+1. Clone the repository and install dependencies:
 
-```sh
-npx turbo run build -F=@repo/*
-```
+   ```sh
+   git clone https://github.com/imsamad/DecorDelight && cd DecorDelight && npm install
+   ```
 
-6.) Finally, spin up the application
+2. Start MongoDB Instance. If you don’t have Docker installed, you can use a cloud instance.
 
-```sh
-npm run dev
-```
+   ```sh
+   docker compose up -d
+   ```
 
-App ready On
+3. Copy environment variables:
 
-<table  width="100%"  >
-<tr>
-<td>Frontend
-</td><td>Backend
-</td>
-</tr>
-<tr>
-<td><a href="http://localhost:3000" target="_blank" >localhost:3000</a>
-</td><td><a href="http://localhost:4000" target="_blank" >localhost:4000</a>
-</td>
-</tr>
-</table>
+   ```sh
+   npm run copy:env
+   ```
 
-### TODOs:
+4. Generate Prisma Client:
 
-1. Allow Admin to park products in draft status temporarily
+   ```sh
+   npm run db:generate
+   ```
+
+5. Build all packages. This step is required due to the JIT compilation strategy used with Turborepo.
+
+   ```sh
+   npx turbo run build -F=@repo/*
+   ```
+
+6. Seed dummy data:
+
+   ```sh
+   npm run db:seed
+   ```
+
+7. Start the application:
+
+   ```sh
+   npm run dev
+   ```
+
+## Access the Application
+
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend**: [http://localhost:4000](http://localhost:4000)
+
+## Test User Credentials
+
+- **Emails**: `user@gmail.com`, `admin@gmail.com`
+- **Password**: `Password@123`
+
+## TODOs
+
+1. Allow Admin to park products in draft status temporarily.
