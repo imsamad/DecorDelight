@@ -8,12 +8,12 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "npx tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "db:generate": "prisma generate",
+    "db:generate": "npx prisma generate",
     "db:push": "prisma db push",
     "db:seed": "ts-node prisma/seed.ts",
     "studio": "prisma studio --browser none"
