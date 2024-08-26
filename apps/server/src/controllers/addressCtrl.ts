@@ -1,8 +1,9 @@
-import { ObjectIdFormatSchema } from "@repo/utils";
-import { Request, Response } from "express";
+import { ObjectIdFormatSchema } from '@repo/utils';
+import { Request, Response } from 'express';
+import { prismaClient } from '@repo/db';
 
 export const createAddress = async (req: Request, res: Response) => {
-  console.log("address: ", req.body);
+  console.log('address: ', req.body);
   const addressData = {
     ...req.body,
     userId: req.user?.id,
@@ -14,7 +15,7 @@ export const createAddress = async (req: Request, res: Response) => {
   const address = await prismaClient.address.create({
     data: addressData,
   });
-  console.log("address: ", address);
+  console.log('address: ', address);
   res.json({
     address,
   });
