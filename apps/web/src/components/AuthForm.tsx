@@ -59,7 +59,7 @@ export const AuthForm = () => {
   const loginForm = useForm<TLoginSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: 'hello@gmail.com',
+      email: 'user@gmail.com',
       password: 'Password@123',
     },
   });

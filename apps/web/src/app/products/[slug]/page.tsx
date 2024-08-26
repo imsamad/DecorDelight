@@ -3,6 +3,10 @@ import { ProductDetails } from './ProductDetails';
 import { PageWrapper } from '@/components/PageWrapper';
 import { ProductList } from '../ProductList';
 import { prismaClient } from '@repo/db';
+
+////export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
+
 const ProductDisplayPage = async ({
   params: { slug },
 }: {

@@ -1,13 +1,16 @@
-import { requireAuth } from "@/lib/requireAuth";
-import { prismaClient } from "@repo/db";
-import CartList from "./CartList";
-import { PageWrapper } from "@/components/PageWrapper";
-import { ProductList } from "../products/ProductList";
-import { notFound } from "next/navigation";
+import { requireAuth } from '@/lib/requireAuth';
+import { prismaClient } from '@repo/db';
+import CartList from './CartList';
+import { PageWrapper } from '@/components/PageWrapper';
+import { ProductList } from '../products/ProductList';
+import { notFound } from 'next/navigation';
+
+////export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
 
 const CartPage = async () => {
-  const session = await requireAuth("/cart");
-  if(!session) return notFound()
+  const session = await requireAuth('/cart');
+  if (!session) return notFound();
   const carts = await prismaClient.cartItem.findMany({
     where: { userId: session.user.id },
     include: {
@@ -29,14 +32,14 @@ const CartPage = async () => {
   });
 
   const recommendedProducts = (await prismaClient.product.findMany({})).filter(
-    ({ id }) => !productIdMapping[id],
+    ({ id }) => !productIdMapping[id]
   );
 
   return (
     <PageWrapper>
       {/* <div className='bg-red-400 p-2 max-w-screen-lg w-full'> </div> */}
       <CartList carts={carts} />
-      <h1 className="text-2xl font-bold  text-center my-10">
+      <h1 className='text-2xl font-bold  text-center my-10'>
         Recommended For You
       </h1>
       <ProductList products={recommendedProducts} showCartButton={false} />

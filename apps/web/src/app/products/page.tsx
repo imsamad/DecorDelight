@@ -1,10 +1,10 @@
-import { prismaClient } from "@repo/db";
-import { ProductList } from "./ProductList";
-import { PageWrapper } from "@/components/PageWrapper";
+import { prismaClient } from '@repo/db';
+import { ProductList } from './ProductList';
+import { PageWrapper } from '@/components/PageWrapper';
 
 const ProductsPage = async () => {
   const products = await prismaClient.product.findMany({
-    where: { status: "PUBLISHED" },
+    where: { status: 'PUBLISHED' },
     select: {
       title: true,
       medias: true,
@@ -18,7 +18,7 @@ const ProductsPage = async () => {
 
   return (
     <PageWrapper>
-      <p className="italic text-center text-xl font-bold">Our collections</p>
+      <p className='italic text-center text-xl font-bold'>Our collections</p>
       <ProductList products={products} />
     </PageWrapper>
   );

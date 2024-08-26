@@ -3,6 +3,8 @@ import { notFound, redirect } from 'next/navigation';
 import Stripe from 'stripe';
 import { prismaClient } from '@repo/db';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+////export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
 
 const StripePaymentSuccessCBHandler = async ({
   params: { orderId },

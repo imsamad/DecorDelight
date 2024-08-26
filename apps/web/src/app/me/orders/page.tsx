@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PageWrapper } from '@/components/PageWrapper';
 
+////export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
+
 const MyOrdersPage = async ({
   wrapInPage = true,
 }: {

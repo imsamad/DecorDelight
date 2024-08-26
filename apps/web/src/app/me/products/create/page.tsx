@@ -1,9 +1,11 @@
-import { requireAdmin } from "@/lib/requireAuth";
-import ProductForm from "../ProductForm";
-import { PageWrapper } from "@/components/PageWrapper";
+import { requireAdmin } from '@/lib/requireAuth';
+import ProductForm from '../ProductForm';
+import { PageWrapper } from '@/components/PageWrapper';
+////export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
 
 const ProductCreate = async () => {
-  await requireAdmin("/me/products/create");
+  await requireAdmin('/me/products/create');
 
   return (
     <PageWrapper>
