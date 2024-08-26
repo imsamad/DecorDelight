@@ -8,7 +8,8 @@
     "dev": "next dev",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "start": "next start"
+    "start": "next start",
+    "deploy:vercel": "cd ../../ && npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && cd apps/web && npm i && cd ../../ && npx turbo run build -F=web"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
