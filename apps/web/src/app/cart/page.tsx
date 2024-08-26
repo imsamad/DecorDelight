@@ -3,9 +3,11 @@ import { prismaClient } from "@repo/db";
 import CartList from "./CartList";
 import { PageWrapper } from "@/components/PageWrapper";
 import { ProductList } from "../products/ProductList";
+import { notFound } from "next/navigation";
 
 const CartPage = async () => {
   const session = await requireAuth("/cart");
+  if(!session) return notFound()
   const carts = await prismaClient.cartItem.findMany({
     where: { userId: session.user.id },
     include: {
