@@ -18,7 +18,7 @@
     "studio": "npx turbo run studio",
     "set:db:env": "echo $DATABASE_URL && echo DATABASE_URL=$DATABASE_URL > packages/db/.env",
     "deploy:render:build": "npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && npx turbo run build -F=server",
-    "deploy:web:build": "npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && npx turbo run build -F=web",
+    "deploy:vercel": "cd ../../ && npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && cd apps/web && npm i && cd ../../ && npx turbo run build -F=web",
     "deploy:render:start": "npx turbo run start -F=server"
   },
   "devDependencies": {
