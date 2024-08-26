@@ -54,7 +54,8 @@ app.use('/api/v1/products', productRouter);
 
 app.get(['/status', '/'], async (req, res) => {
   console.log(process.env);
-  res.json({ ok: true });
+
+  res.json({ ok: true, c: process.env.CORS_ORIGIN });
 });
 
 app.use(() => {
