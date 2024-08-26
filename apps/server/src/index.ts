@@ -11,7 +11,9 @@ require('dotenv').config({
 import 'express-async-errors';
 import { server } from './server';
 import { EUserRole } from '@repo/db';
-if (!fs.existsSync(envFilePath)) process.exit(1);
+
+if (process.env.NODE_ENV == 'development' && !fs.existsSync(envFilePath))
+  process.exit(1);
 
 const port = process.env.PORT || 4000;
 

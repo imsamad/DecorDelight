@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "npxac npx turbo run build",
+    "build": "npx turbo run build",
     "clean": "npx turbo run clean",
     "dev": "npx turbo run dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
