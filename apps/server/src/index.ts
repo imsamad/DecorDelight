@@ -1,15 +1,16 @@
 import fs from 'fs';
 const envFilePath = `${process.cwd()}/.env`;
-require('dotenv').config({
-  path: envFilePath,
-});
+
+// require('dotenv').config({
+//   path: envFilePath,
+// });
 
 import 'express-async-errors';
 import { server } from './server';
 import { EUserRole } from '@repo/db';
 
-if (process.env.NODE_ENV == 'development' && !fs.existsSync(envFilePath))
-  process.exit(1);
+// if (process.env.NODE_ENV == 'development' && !fs.existsSync(envFilePath))
+//   process.exit(1);
 
 const port = process.env.PORT || 4000;
 

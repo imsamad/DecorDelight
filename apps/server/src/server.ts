@@ -1,6 +1,6 @@
-require('dotenv').config({
-  path: `${process.cwd()}/.env`,
-});
+// require('dotenv').config({
+//   path: `${process.cwd()}/.env`,
+// });
 
 import express, { type Express } from 'express';
 import morgan from 'morgan';
