@@ -56,6 +56,12 @@ app
     })
   );
 
+app.use((_, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN!);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 app.use('/api/v1/assets', assetRouter);
 app.use('/api/v1/addresses', addressRouter);
 app.use('/api/v1/auth', authRouter);
