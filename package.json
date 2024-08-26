@@ -15,6 +15,7 @@
     "db:push": "npx turbo run db:push -F=@repo/db",
     "db:seed": "npx turbo run db:seed -F=@repo/db",
     "clean-x": "rm -rf node_modules .turbo && cd apps/web && rm -rf node_modules .turbo .next && cd ../server && rm -rf node_modules .turbo dist && cd ../../packages/db &&  rm -rf node_modules .turbo dist && cd ../utils &&  rm -rf node_modules .turbo dist",
+    "copy:env": "cp apps/web/.env.example /apps/web/.env && cp apps/server/.env.example /apps/server/.env && cp packages/db/.env.example /packages/db/.env",
     "studio": "npx turbo run studio",
     "set:db:env": "echo $DATABASE_URL && echo DATABASE_URL=$DATABASE_URL > packages/db/.env",
     "deploy:render:build": "npm install && npm run db:generate && npx turbo run build -F=@repo/db && npx turbo run build -F=@repo/utils && npx turbo run build -F=server",
