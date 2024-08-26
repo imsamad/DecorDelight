@@ -1,6 +1,11 @@
-// require('dotenv').config({
-//   path: `${process.cwd()}/.env`,
-// });
+const envFilePath =
+  process.env.NODE_ENV == 'production'
+    ? `/etc/secrets/.env`
+    : `${process.cwd()}/.env`;
+
+require('dotenv').config({
+  path: envFilePath,
+});
 
 import express, { type Express } from 'express';
 import morgan from 'morgan';

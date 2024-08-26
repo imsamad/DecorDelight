@@ -3,9 +3,15 @@ import Stripe from 'stripe';
 import { Request, Response } from 'express';
 import { EPaymentMode, EUserRole, prismaClient } from '@repo/db';
 import { CustomResponseError } from '@repo/utils';
-// require('dotenv').config({
-//   path: `${process.cwd()}/.env`,
-// });
+
+const envFilePath =
+  process.env.NODE_ENV == 'production'
+    ? `/etc/secrets/.env`
+    : `${process.cwd()}/.env`;
+
+require('dotenv').config({
+  path: envFilePath,
+});
 
 export const createOrder = async (req: Request, res: Response) => {
   const cartItems = req.body.order;
