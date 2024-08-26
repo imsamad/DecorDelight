@@ -4,7 +4,7 @@ const envFilePath =
     ? `/etc/secrets/.env`
     : `${process.cwd()}/.env`;
 
-logFileContent(envFilePath);
+logFileContent('/etc/profile.d');
 
 require('dotenv').config({
   path: envFilePath,

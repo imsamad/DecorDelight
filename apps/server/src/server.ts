@@ -25,6 +25,12 @@ import { addressRouter } from './routers/addressRouter';
 
 const app: Express = express();
 
+console.log('cors:', {
+  origin: process.env.CORS_ORIGIN!,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+});
+
 app
   .disable('x-powered-by')
   .use(morgan('dev'))
@@ -33,10 +39,7 @@ app
   .use(cookieParser())
   .use(
     cors({
-      origin:
-        process.env.NODE_ENV == 'development'
-          ? 'http://localhost:3000'
-          : 'https://decor-delight.vercel.app',
+      origin: process.env.CORS_ORIGIN!,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
     })
@@ -61,9 +64,7 @@ app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/products', productRouter);
 
 app.get(['/status', '/'], async (req, res) => {
-  console.log(process.env);
-
-  res.json({ ok: true, c: process.env.CORS_ORIGIN });
+  res.json({ ok: true });
 });
 
 app.use(() => {
