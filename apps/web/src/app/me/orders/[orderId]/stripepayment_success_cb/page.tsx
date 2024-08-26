@@ -1,7 +1,7 @@
-import { requireAuth } from "@/lib/requireAuth";
-import { notFound, redirect } from "next/navigation";
-import Stripe from "stripe";
-
+import { requireAuth } from '@/lib/requireAuth';
+import { notFound, redirect } from 'next/navigation';
+import Stripe from 'stripe';
+import { prismaClient } from '@repo/db';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const StripePaymentSuccessCBHandler = async ({
@@ -10,7 +10,7 @@ const StripePaymentSuccessCBHandler = async ({
   params: { orderId: string };
 }) => {
   const session = await requireAuth(
-    `/me/orders/${orderId}/stripepayment_success_cb`,
+    `/me/orders/${orderId}/stripepayment_success_cb`
   );
 
   const order = await prismaClient.order.findFirst({
@@ -20,10 +20,10 @@ const StripePaymentSuccessCBHandler = async ({
   if (!order || !order.stripeSessionId) return notFound();
 
   const stripeSession = await stripe.checkout.sessions.retrieve(
-    order.stripeSessionId,
+    order.stripeSessionId
   );
 
-  if (stripeSession.payment_status != "paid") notFound();
+  if (stripeSession.payment_status != 'paid') notFound();
 
   await prismaClient.order.update({
     where: { id: orderId },

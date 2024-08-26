@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
-import { ProductDetails } from "./ProductDetails";
-import { PageWrapper } from "@/components/PageWrapper";
-import { ProductList } from "../ProductList";
-
+import { notFound } from 'next/navigation';
+import { ProductDetails } from './ProductDetails';
+import { PageWrapper } from '@/components/PageWrapper';
+import { ProductList } from '../ProductList';
+import { prismaClient } from '@repo/db';
 const ProductDisplayPage = async ({
   params: { slug },
 }: {
@@ -15,13 +15,13 @@ const ProductDisplayPage = async ({
   if (!product) return notFound();
 
   const recommendedProducts = (await prismaClient.product.findMany({})).filter(
-    ({ id }) => id != product.id,
+    ({ id }) => id != product.id
   );
 
   return (
     <PageWrapper>
       <ProductDetails product={product} />
-      <h1 className="text-2xl font-bold md:text-left text-center my-10">
+      <h1 className='text-2xl font-bold md:text-left text-center my-10'>
         Recommended For You
       </h1>
       <ProductList products={recommendedProducts} />

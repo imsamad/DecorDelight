@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link'; 
-import {prismaClient} from "@repo/db"
+import Link from 'next/link';
+import { prismaClient } from '@repo/db';
 
 const LandingPage = async () => {
   const products = await prismaClient.product.findMany({
