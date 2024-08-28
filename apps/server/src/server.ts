@@ -25,12 +25,6 @@ import { addressRouter } from './routers/addressRouter';
 
 const app: Express = express();
 
-console.log('cors:', {
-  origin: process.env.CORS_ORIGIN!,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-});
-
 app
   .disable('x-powered-by')
   .use(morgan('dev'))
@@ -57,8 +51,8 @@ app
   );
 
 app.use((_, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN!);
-  res.header('Access-Control-Allow-Credentials', 'true');
+  // res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN!);
+  // res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
 

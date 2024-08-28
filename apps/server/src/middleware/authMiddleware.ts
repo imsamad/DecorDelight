@@ -1,19 +1,19 @@
-import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
-import { CustomResponseError } from "@repo/utils";
-import { EUserRole, prismaClient } from "@repo/db";
-import { AUTH_COOKIE_NAME } from "../lib/const";
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import { CustomResponseError } from '@repo/utils';
+import { EUserRole, prismaClient } from '@repo/db';
+import { AUTH_COOKIE_NAME } from '../lib/const';
 
 export const requireAuth = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   await attachUserToRequest(req, res);
 
   if (!req.user?.id)
     throw new CustomResponseError(404, {
-      message: "not authorised",
+      message: 'not authorised',
     });
 
   next();
@@ -22,12 +22,12 @@ export const requireAuth = async (
 export const requireAdmin = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   await attachUserToRequest(req, res);
   if (req.user?.role != EUserRole.ADMIN)
     throw new CustomResponseError(404, {
-      message: "not authorised, you are not admin!",
+      message: 'not authorised, you are not admin!',
     });
   next();
 };
@@ -35,11 +35,12 @@ export const requireAdmin = async (
 export const attachUserToRequest = async (
   req: Request,
   _: Response,
-  next?: NextFunction,
+  next?: NextFunction
 ): Promise<Request | void> => {
+  console.log('req.cookies: ', req.cookies);
   let authToken = req.cookies[AUTH_COOKIE_NAME];
 
-  authToken = authToken ? authToken : req.headers.authorization?.split(" ")[1];
+  authToken = authToken ? authToken : req.headers.authorization?.split(' ')[1];
 
   if (!authToken) {
     next && next();
@@ -61,7 +62,7 @@ export const attachUserToRequest = async (
     return;
   }
 
-  user.password = "";
+  user.password = '';
 
   req.user = user;
   next && next();

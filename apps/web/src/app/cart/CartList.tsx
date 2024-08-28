@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,42 +8,55 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
-import { fetcher } from "@/lib/fetcher";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { MinusCircle, PlusCircle, Trash2 } from 'lucide-react';
+import { fetcher } from '@/lib/fetcher';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/components/ui/use-toast';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fetchData } from 'next-auth/client/_utils';
+import { CartItem } from '@repo/db';
 
-const CartList = ({ carts: cartsProps }: { carts: any }) => {
+const CartList = () => {
   const { toast } = useToast();
   const router = useRouter();
-  const [carts, setCarts] = useState(cartsProps);
-  const [selectedItems, setSelectedItems] = useState(
-    cartsProps.map(({ id }: any) => id),
-  );
+  const [carts, setCarts] = useState<CartItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const refetchCart = async () => {
-    fetcher("/carts", "GET")
+  const fetchCartItems = (cb: any) => {
+    fetcher('/carts', 'GET')
       .then(({ cartItems }) => {
-        setSelectedItems((items: any) =>
-          items.filter(
-            (item: any) =>
-              cartItems.findIndex(({ id }: any) => id == item) != -1,
-          ),
-        );
-        setCarts(cartItems);
+        cb && cb(cartItems);
       })
       .catch((err) => {});
   };
 
+  useEffect(() => {
+    fetchCartItems((cartItems: any) => {
+      setCarts(cartItems);
+
+      setSelectedItems(cartItems.map(({ id }: any) => id));
+    });
+  }, []);
+
+  const refetchCart = async () => {
+    fetchCartItems((cartItems: any) => {
+      setSelectedItems((items: any) =>
+        items.filter(
+          (item: any) => cartItems.findIndex(({ id }: any) => id == item) != -1
+        )
+      );
+      setCarts(cartItems);
+    });
+  };
+
   const handleDelete = (cartId: string) => {
-    fetcher(`/carts/${cartId}`, "DELETE")
+    fetcher(`/carts/${cartId}`, 'DELETE')
       .then((res) => {
         refetchCart();
       })
@@ -60,16 +73,15 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
   const handlePlaceOrder = async () => {
     const order = carts
       .filter(
-        (cart: any) =>
-          selectedItems.findIndex((id: any) => id == cart.id) != -1,
+        (cart: any) => selectedItems.findIndex((id: any) => id == cart.id) != -1
       )
       .map((cart: any) => ({ cartItemId: cart.id, quantity: cart.quantity }));
 
-    fetcher("/orders", "POST", { order })
+    fetcher('/orders', 'POST', { order })
       .then((res) => {
         toast({
-          title: "Order placed",
-          variant: "default",
+          title: 'Order placed',
+          variant: 'default',
         });
         router.push(`/me/orders/${res.order.id}`);
       })
@@ -78,22 +90,22 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
 
   if (carts.length === 0)
     return (
-      <div className="flex flex-col items-center justify-center py-10">
+      <div className='flex flex-col items-center justify-center py-10'>
         <Image
-          src="/emptyCartImage.jpeg" // Replace with your own image
-          alt="Empty Cart"
+          src='/emptyCartImage.jpeg' // Replace with your own image
+          alt='Empty Cart'
           width={200}
           height={200}
-          className="mb-4 rounded-lg"
+          className='mb-4 rounded-lg'
         />
-        <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+        <h2 className='text-2xl font-semibold mb-2 text-gray-800'>
           Your cart is empty
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className='text-gray-600 mb-6'>
           Looks like you haven't added anything to your cart yet.
         </p>
-        <Link href="/">
-          <Button variant="default" size="lg">
+        <Link href='/'>
+          <Button variant='default' size='lg'>
             Continue Shopping
           </Button>
         </Link>
@@ -101,7 +113,7 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
     );
 
   return (
-    <Card className="overflow-x-auto w-full mx-auto">
+    <Card className='overflow-x-auto w-full mx-auto'>
       <CardHeader>
         {/* <div className=''> */}
         {/* <h3 className='text-center text-lg font-semibold text-gray-900 truncate'> */}
@@ -112,7 +124,7 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-100 text-gray-700">
+            <TableRow className='bg-gray-100 text-gray-700'>
               <TableHead>Select</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Name</TableHead>
@@ -123,7 +135,7 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
           </TableHeader>
           <TableBody>
             {carts.map((cart: any) => (
-              <TableRow key={cart.id} className="hover:bg-gray-50">
+              <TableRow key={cart.id} className='hover:bg-gray-50'>
                 <TableCell>
                   <Checkbox
                     checked={
@@ -142,14 +154,14 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
                       width={80}
                       height={80}
                       style={{
-                        width: "auto",
-                        height: "auto",
+                        width: 'auto',
+                        height: 'auto',
                       }}
-                      className="rounded-lg"
+                      className='rounded-lg'
                     />
                   ) : null}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className='font-medium'>
                   {cart.product.title}
                 </TableCell>
                 <TableCell>
@@ -165,37 +177,37 @@ const CartList = ({ carts: cartsProps }: { carts: any }) => {
                   {cart.product.price.amount}
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <Button
-                      size="sm"
-                      variant="ghost"
+                      size='sm'
+                      variant='ghost'
                       onClick={() => handleDelete(cart.id)}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className='w-4 h-4' />
                     </Button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow className="border-0">
+            <TableRow className='border-0'>
               <TableCell colSpan={4} />
-              <TableCell className="font-bold">Total</TableCell>
-              <TableCell className="font-bold">
+              <TableCell className='font-bold'>Total</TableCell>
+              <TableCell className='font-bold'>
                 {carts.reduce(
                   (acc: number, red: any) =>
                     acc +
                     (selectedItems.includes(red.id)
                       ? red.product.price.amount * red.quantity
                       : 0),
-                  0,
+                  0
                 )}
               </TableCell>
             </TableRow>
-            <TableRow className="hover:bg-inherit">
+            <TableRow className='hover:bg-inherit'>
               <TableCell colSpan={4} />
               <TableCell colSpan={2}>
                 <Button
-                  className="w-full"
+                  className='w-full'
                   disabled={selectedItems.length === 0}
                   onClick={handlePlaceOrder}
                 >
@@ -225,7 +237,7 @@ const QuantityComponent = ({
 
   const handleChangeQuantity = (inc: number) => {
     setQuantity((p) => p + inc);
-    fetcher(`/carts/${cartId}?quantity=${quantity + inc}`, "PUT")
+    fetcher(`/carts/${cartId}?quantity=${quantity + inc}`, 'PUT')
       .then(() => {
         refetchCart();
       })
@@ -233,19 +245,19 @@ const QuantityComponent = ({
   };
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className='flex items-center space-x-2'>
       <Button
-        size="icon"
-        variant="ghost"
+        size='icon'
+        variant='ghost'
         disabled={quantity === 1}
         onClick={() => handleChangeQuantity(-1)}
       >
         <MinusCircle />
       </Button>
-      <p className="text-lg">{quantity}</p>
+      <p className='text-lg'>{quantity}</p>
       <Button
-        size="icon"
-        variant="ghost"
+        size='icon'
+        variant='ghost'
         onClick={() => handleChangeQuantity(1)}
       >
         <PlusCircle />

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LogoutDropdownMenuItem } from './LogoutDropdownMenuItem';
+import CartButton from './CartButton';
 
 export const Navbar = async () => {
   const session = await getServerSession(authOption);
@@ -29,7 +30,12 @@ export const Navbar = async () => {
           <SearchBar />
         </div>
 
-        <div className='flex items-center '>
+        <div className='flex items-center gap-2'>
+          <Link href='/products' className=''>
+            <Button variant='ghost' size='sm'>
+              All Products
+            </Button>
+          </Link>
           {isLoggedIn ? (
             <>
               <Link href='/cart' className=''>
@@ -55,6 +61,9 @@ export const Navbar = async () => {
                       {session.user.role == 'ADMIN' ? 'All' : 'My'} Orders
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href='/cart'>My Cart</Link>
+                  </DropdownMenuItem>
                   {session.user.role == 'ADMIN' ? (
                     <DropdownMenuItem>
                       <Link className='flex items-center' href='/me/products'>
@@ -62,11 +71,7 @@ export const Navbar = async () => {
                       </Link>
                     </DropdownMenuItem>
                   ) : null}
-                  <DropdownMenuItem>
-                    <Link className='flex items-center' href='/me'>
-                      My Cart
-                    </Link>
-                  </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
 
                   <LogoutDropdownMenuItem />

@@ -55,11 +55,11 @@ export const login = async (req: Request, res: Response) => {
   });
 
   res.cookie(AUTH_COOKIE_NAME, jwtToken, {
-    // ms
+    // in ms
     maxAge: 60 * 60 * 1000 * (parseInt(process.env.JWT_EXPIRE_IN_HR!, 10) || 1),
     secure: process.env.NODE_ENV == 'production',
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'lax' for development to avoid issues
   });
 
   res.json({
